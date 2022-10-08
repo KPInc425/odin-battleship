@@ -1,9 +1,10 @@
-const Battleship = (length, hits, sunk) => {
+const Battleship = (length, hits, sunk, name) => {
     // console.log("Make BattleShip!");
     const shipData = {
         length: length,
         hits: hits || 0,
         sunk: sunk || false,
+        name: name || "Battleship",
     }
 
     const hit = () => {
