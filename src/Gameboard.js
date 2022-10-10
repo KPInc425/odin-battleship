@@ -65,7 +65,8 @@ const Gameboard = (sizeX, sizeY) => {
     // }
 
     const receiveAttack = (coords) => {
-        let attackHit = checkOccupied(coords);
+        let attackLocationIndex = getLocationIndex(coords);
+        let attackHit = checkOccupied(attackLocationIndex);
 
         return attackHit;
     }
@@ -112,9 +113,9 @@ const Gameboard = (sizeX, sizeY) => {
     //     return randomLocation;
     // }
     
-    const checkOccupied = (location) => {
+    const checkOccupied = (index) => {
         // console.log(location);
-        const index = getLocationIndex(location);
+        // const index = getLocationIndex(location);
         // console.log(index);
         if (index) {
             if (boardLocArray[index][2] === 1) {
@@ -145,8 +146,8 @@ const Gameboard = (sizeX, sizeY) => {
             // east = x + 1
             let tmpLocation = [location[0] + i, location[1]];
             // if occupied, stop counting direction
-            
-            if (checkOccupied(tmpLocation)) {
+            const tmpLocationIndex = getLocationIndex(tmpLocation);
+            if (checkOccupied(tmpLocationIndex)) {
                 return false;
             }
             // add location to array if empty
@@ -171,7 +172,8 @@ const Gameboard = (sizeX, sizeY) => {
             // west = x - i
             let tmpLocation = [location[0] - i, location[1]];
             // if occupied, stop counting direction
-            if (checkOccupied(tmpLocation)) {
+            const tmpLocationIndex = getLocationIndex(tmpLocation);
+            if (checkOccupied(tmpLocationIndex)) {
                 return false;
             }
             // add location to array if empty
@@ -196,8 +198,9 @@ const Gameboard = (sizeX, sizeY) => {
         for (let i = 1; i < length; i++) {
             // north = y - i
             let tmpLocation = [location[0], location[1] - i];
+            const tmpLocationIndex = getLocationIndex(tmpLocation);
             // if occupied, stop counting direction
-            if (checkOccupied(tmpLocation)) {
+            if (checkOccupied(tmpLocationIndex)) {
                 return false;
             }
             // add location to array if empty
@@ -224,8 +227,9 @@ const Gameboard = (sizeX, sizeY) => {
         for (let i = 1; i < length; i++) {
             // south = y + i
             let tmpLocation = [location[0], location[1] + i];
+            const tmpLocationIndex = getLocationIndex(tmpLocation);
             // if occupied, stop counting direction
-            if (checkOccupied(tmpLocation)) {
+            if (checkOccupied(tmpLocationIndex)) {
                 return false;
             }
             // add location to array if empty
