@@ -4,6 +4,7 @@ const Gameboard = (sizeX, sizeY) => {
     const x = sizeX;
     const y = sizeY;
     const boardLocArray = [];
+    const shipsLocationArray = [];
     const legend = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
         'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
@@ -63,7 +64,16 @@ const Gameboard = (sizeX, sizeY) => {
     //             // else chose 1 of remaining directions
     // }
 
+    const receiveAttack = (coords) => {
+        let attackHit = checkOccupied(coords);
+
+        return attackHit;
+    }
+
     const placeShip = (shipSize, location, directionIndex) => {
+        if (shipsLocationArray.length > 4) {
+            return console.error("Max ships already placed!");
+        }
         let ship = Battleship(shipSize);
         // console.log(ship);
 
@@ -73,7 +83,7 @@ const Gameboard = (sizeX, sizeY) => {
         if (possiblePlacements[directionIndex].indexArray) {
             // loop through placement location array
             let placementIndexArray = possiblePlacements[directionIndex].indexArray;
-            // console.log(placementIndexArray);
+            console.log(placementIndexArray);
             let placementLocations = [];
             for (let i = 0; i < placementIndexArray.length; i++) {
                 // set gameboard location switch to 1
@@ -83,6 +93,7 @@ const Gameboard = (sizeX, sizeY) => {
                 // console.log(boardLocArray[placementIndexArray[i]]);
             }
             // console.log(placementLocations);
+            shipsLocationArray.push({ ship: ship, coords: placementLocations });
             return placementLocations;
         } else {
             console.error(`That move is invalid! You cannot move 
@@ -92,14 +103,14 @@ const Gameboard = (sizeX, sizeY) => {
         
     }
 
-    const getRandomLocation = () => {
-        // get Max number from last location
-        const maxNumber = boardLocArray[boardLocArray.length - 1][0];
-        const x = Math.floor(Math.random() * maxNumber);
-        const y = Math.floor(Math.random() * maxNumber);
-        let randomLocation = [x, y];
-        return randomLocation;
-    }
+    // const getRandomLocation = () => {
+    //     // get Max number from last location
+    //     const maxNumber = boardLocArray[boardLocArray.length - 1][0];
+    //     const x = Math.floor(Math.random() * maxNumber);
+    //     const y = Math.floor(Math.random() * maxNumber);
+    //     let randomLocation = [x, y];
+    //     return randomLocation;
+    // }
     
     const checkOccupied = (location) => {
         // console.log(location);
@@ -134,6 +145,7 @@ const Gameboard = (sizeX, sizeY) => {
             // east = x + 1
             let tmpLocation = [location[0] + i, location[1]];
             // if occupied, stop counting direction
+            
             if (checkOccupied(tmpLocation)) {
                 return false;
             }
@@ -265,8 +277,9 @@ const Gameboard = (sizeX, sizeY) => {
     return {
         boardLocArray,
         // initializeShipArray,
-        getRandomLocation,
+        // getRandomLocation,
         placeShip,
+        receiveAttack,
     };
 }
 
