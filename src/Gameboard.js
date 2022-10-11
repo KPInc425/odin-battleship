@@ -5,6 +5,8 @@ const Gameboard = (sizeX, sizeY) => {
     const y = sizeY;
     const boardLocArray = [];
     const shipsLocationArray = [];
+    const missedAttacks = [];
+    const hitAttacks = [];
     const legend = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
         'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
@@ -65,27 +67,94 @@ const Gameboard = (sizeX, sizeY) => {
     // }
 
     const receiveAttack = (coords) => {
+
         let attackLocationIndex = getLocationIndex(coords);
+        // Check if attackMove has already been made before
+        if (checkAttacks(missedAttacks, attackLocationIndex)) {
+            return console.error("You have already missed there!")
+        }
+        if (checkAttacks(hitAttacks, attackLocationIndex)) {
+            return console.error("You have already caused destruction there!")
+        }
+
+        // Check if locaiton is occupied by ship
         let attackHit = checkOccupied(attackLocationIndex);
 
-        return attackHit;
+        if (attackHit) {
+
+            let hitShip = getHitShip(attackLocationIndex);
+            hitShip.hit();
+            console.log(hitShip);
+            if (hitShip.isSunk()) {
+                console.log(`You have sunk the ${hitShip.shipData.name}`);
+                if(checkIfLost()) {
+                    console.log("All Ships have been destroyed");
+                    return true;
+                };
+            }
+            // console.log(shipsLocationArray);
+            // add to successful hits array
+            hitAttacks.push(attackLocationIndex);
+
+            return attackHit;
+        } else {
+            // add to missed hits array
+            missedAttacks.push(attackLocationIndex);
+            return false;
+        }
     }
 
-    const placeShip = (shipSize, location, directionIndex) => {
+    const checkIfLost = () => {
+        let sunkShips = 0;
+        shipsLocationArray.forEach((ship) => {
+            if (ship.shipData.isSunk === 1) {
+                sunkShips++
+            }
+        })
+
+        if (sunkShips === shipsLocationArray.length) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    const getHitShip = (hitIndex) => {
+        for (let i = 0; i < shipsLocationArray.length; i++) {
+            // console.log(shipsLocationArray[i]);
+            let foundShip = shipsLocationArray[i].shipData.location.find(index => index === hitIndex);
+            if (foundShip) {
+                return shipsLocationArray[i];
+            }
+        }
+    }
+
+    const checkAttacks = (attackArray,index) => {
+        for (let i = 0; i < attackArray.length; i++) {
+            if (attackArray[i] === index) {
+                return true
+            }
+        }
+        return false;
+    }
+
+    const placeShip = (shipSize, location, directionIndex, mockShip) => {
         if (shipsLocationArray.length > 4) {
             return console.error("Max ships already placed!");
         }
-        let ship = Battleship(shipSize);
+        let ship = mockShip || Battleship(shipSize);
         // console.log(ship);
 
         const possiblePlacements = checkPossiblePlacements(ship, location);
-        console.log(possiblePlacements);
+        // console.log(possiblePlacements);
 
+        // if chosen direction to place is valid
         if (possiblePlacements[directionIndex].indexArray) {
-            // loop through placement location array
             let placementIndexArray = possiblePlacements[directionIndex].indexArray;
-            console.log(placementIndexArray);
+            ship.shipData.location = placementIndexArray;
+            // console.log(ship);
             let placementLocations = [];
+            // loop through placement location array
             for (let i = 0; i < placementIndexArray.length; i++) {
                 // set gameboard location switch to 1
                 boardLocArray[placementIndexArray[i]][2] = 1;
@@ -94,7 +163,7 @@ const Gameboard = (sizeX, sizeY) => {
                 // console.log(boardLocArray[placementIndexArray[i]]);
             }
             // console.log(placementLocations);
-            shipsLocationArray.push({ ship: ship, coords: placementLocations });
+            shipsLocationArray.push(ship);
             return placementLocations;
         } else {
             console.error(`That move is invalid! You cannot move 
@@ -284,6 +353,7 @@ const Gameboard = (sizeX, sizeY) => {
         // getRandomLocation,
         placeShip,
         receiveAttack,
+        checkIfLost,
     };
 }
 

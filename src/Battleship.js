@@ -5,6 +5,7 @@ const Battleship = (length, hits, sunk, name) => {
         hits: hits || 0,
         sunk: sunk || false,
         name: name || "Battleship",
+        location: null,
     }
 
     const hit = () => {
