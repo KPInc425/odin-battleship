@@ -21,6 +21,8 @@ const Gameboard = (sizeX, sizeY) => {
         }
     }
 
+    // console.log(boardLocArray);
+
     // const initializeShipArray = () => {
     //     const shipArray = [
     //         Battleship(5),
