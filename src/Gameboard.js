@@ -195,7 +195,7 @@ const Gameboard = (sizeX, sizeY) => {
                 return false;
             }
         } else {
-            console.error("Location is out of bounds!");
+            // console.error("Location is out of bounds!");
             return true;
         }
 
@@ -351,6 +351,7 @@ const Gameboard = (sizeX, sizeY) => {
 
     return {
         boardLocArray,
+        shipsLocationArray,
         // initializeShipArray,
         // getRandomLocation,
         placeShip,
