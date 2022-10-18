@@ -1,8 +1,9 @@
 import Gameboard from "./Gameboard";
 import Player from "./Player";
-import { drawGameboards, setShips } from "./functionsDOM.js";
+import { addAttackListeners, drawGameboards, setShips } from "./functionsDOM.js";
 
 const newGame = (() => {
+    let currentPlayer = 1;
     drawGameboards();
 
     const player1 = {
@@ -14,7 +15,6 @@ const newGame = (() => {
         gameboard: Gameboard(10, 10),
     }
 
-    console.log(player1.gameboard.boardLocArray[0]);
 
     player1.gameboard.placeShip(5, [0,0], 2);
     player1.gameboard.placeShip(4, [0,1], 2);
@@ -28,13 +28,16 @@ const newGame = (() => {
     player2.gameboard.placeShip(3, [4,5], 0);
     player2.gameboard.placeShip(2, [5,8], 3);
 
-    setShips(player1, 0);
-    setShips(player2, 1);
+    setShips(player1, 1);
+    setShips(player2, 2);
+
+    addAttackListeners(player2);
     
 
     return {
         player1,
         player2,
+
     }
 
 })();

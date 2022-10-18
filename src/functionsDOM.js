@@ -21,7 +21,7 @@ const drawGameboards = () => {
     // create MAIN grid container for player1
     const player1Grid = document.createElement('div');
     player1Grid.classList.add('gridContainer');
-    player1Grid.id = "player0Area";
+    player1Grid.id = "player1Area";
 
     // create player1 play area grid container
     const player1PlayArea = document.createElement('div');
@@ -61,7 +61,7 @@ const drawGameboards = () => {
     // create MAIN grid container for player2
     const player2Grid = document.createElement('div');
     player2Grid.classList.add('gridContainer');
-    player2Grid.id = "player1Area";
+    player2Grid.id = "player2Area";
 
     // Add Gameboard labels
     const gridAlphaLabels2 = gridAlphaLabels1.cloneNode(true);
@@ -80,7 +80,6 @@ const drawGameboards = () => {
 }
 
 const setShips = (player, playerIndex) => {
-    console.log(player.gameboard.shipsLocationArray);
     // get player area
     const playerContainer = document.querySelector(`#player${playerIndex}Area`);
     // get player coord location area
@@ -96,8 +95,6 @@ const setShips = (player, playerIndex) => {
             tmpLocation.classList.add('shipLocation');
         }
     })
-
-    return 1
 }
 
 const findNode = (nodeList, index) => {
@@ -108,7 +105,20 @@ const findNode = (nodeList, index) => {
     }
 }
 
+const addAttackListeners = (player) => {
+    const enemyCoordLocations = document.querySelector('#player2Area').querySelectorAll('.gridLocation');
+    console.log(enemyCoordLocations);
+    enemyCoordLocations.forEach((coord) => {
+        coord.addEventListener('click', (e) => {
+            console.log(e.target.textContent);
+            player.gameboard.receiveAttack(e.target.getAttribute('data-index'));
+            e.target.textContent = 'X';
+        })
+    })
+}
+
 export {
     drawGameboards,
     setShips,
+    addAttackListeners,
 }
