@@ -144,6 +144,17 @@ const Gameboard = (sizeX, sizeY) => {
         if (shipsLocationArray.length > 4) {
             return console.error("Max ships already placed!");
         }
+
+        // if (checkOccupied(getLocationIndex(location))) {
+        //     console.log(location);
+        //     console.log(getLocationIndex(location));
+        //     console.log(checkOccupied(getLocationIndex(location)));
+        //     return console.error("This location is already occupied!");
+        // }
+
+
+
+        
         let ship = mockShip || Battleship(shipSize);
         // console.log(ship);
 
@@ -175,33 +186,26 @@ const Gameboard = (sizeX, sizeY) => {
         
     }
 
-    // const getRandomLocation = () => {
-    //     // get Max number from last location
-    //     const maxNumber = boardLocArray[boardLocArray.length - 1][0];
-    //     const x = Math.floor(Math.random() * maxNumber);
-    //     const y = Math.floor(Math.random() * maxNumber);
-    //     let randomLocation = [x, y];
-    //     return randomLocation;
-    // }
     
     const checkOccupied = (index) => {
-        // console.log(location);
-        // const index = getLocationIndex(location);
         // console.log(index);
-        if (index) {
-            if (boardLocArray[index][2] === 1) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            // console.error("Location is out of bounds!");
+        // console.log("Occupied Called!");
+        
+        if (index < 0 || index > boardLocArray.length || index === undefined) {
+            console.error("Location is out of bounds!");
             return true;
+        } 
+
+        if (boardLocArray[index][2] === 1) {
+            return true;
+        } else {
+            return false;
         }
 
     }
 
     const getLocationIndex = (location) => {
+        // console.log(location);
         for (let i = 0; i < boardLocArray.length; i++) {
             if (boardLocArray[i][0] === location[0] && boardLocArray[i][1] === location[1]) {
                 return i;
@@ -215,7 +219,8 @@ const Gameboard = (sizeX, sizeY) => {
         // check all locations in chosen direction, stop at length of ship
         for (let i = 1; i < length; i++) {
             // east = x + 1
-            let tmpLocation = [location[0] + i, location[1]];
+            // let tmpLocation = [location[0] + i, location[1]];
+            let tmpLocation = [location[0], location[1] + i];
             // if occupied, stop counting direction
             const tmpLocationIndex = getLocationIndex(tmpLocation);
             if (checkOccupied(tmpLocationIndex)) {
@@ -240,8 +245,11 @@ const Gameboard = (sizeX, sizeY) => {
         let indexArray = [getLocationIndex(location)];
         // check all locations in chosen direction, stop at length of ship
         for (let i = 1; i < length; i++) {
-            // west = x - i
-            let tmpLocation = [location[0] - i, location[1]];
+            // check if out of range
+            if ((location[1] - i) < 0) {
+                return false;
+            }
+            let tmpLocation = [location[0], location[1] - i];
             // if occupied, stop counting direction
             const tmpLocationIndex = getLocationIndex(tmpLocation);
             if (checkOccupied(tmpLocationIndex)) {
@@ -267,8 +275,11 @@ const Gameboard = (sizeX, sizeY) => {
         let indexArray = [getLocationIndex(location)];
         // check all locations in chosen direction, stop at length of ship
         for (let i = 1; i < length; i++) {
-            // north = y - i
-            let tmpLocation = [location[0], location[1] - i];
+            // check if out of range
+            if ((location[0] - i) < 0) {
+                return false;
+            }
+            let tmpLocation = [location[0] - i, location[1]];
             const tmpLocationIndex = getLocationIndex(tmpLocation);
             // if occupied, stop counting direction
             if (checkOccupied(tmpLocationIndex)) {
@@ -284,9 +295,6 @@ const Gameboard = (sizeX, sizeY) => {
             return false;
         } else {
             // if fits, return index array
-            // indexArray.forEach((index) => {
-            //     boardLocArray[index][2] = 1;
-            // })
             return indexArray;
         } 
     }
@@ -297,7 +305,8 @@ const Gameboard = (sizeX, sizeY) => {
         // check all locations in chosen direction, stop at length of ship
         for (let i = 1; i < length; i++) {
             // south = y + i
-            let tmpLocation = [location[0], location[1] + i];
+            // let tmpLocation = [location[0], location[1] + i];
+            let tmpLocation = [location[0] + i, location[1]];
             const tmpLocationIndex = getLocationIndex(tmpLocation);
             // if occupied, stop counting direction
             if (checkOccupied(tmpLocationIndex)) {
@@ -346,6 +355,8 @@ const Gameboard = (sizeX, sizeY) => {
             possibleMoves.push({ direction: "west", indexArray: false });
 
         }
+
+        // console.log(possibleMoves);
         return possibleMoves;
     }
 

@@ -80,6 +80,7 @@ const drawGameboards = () => {
 }
 
 const setShips = (player, playerIndex) => {
+    console.log(player.gameboard.shipsLocationArray);
     // get player area
     const playerContainer = document.querySelector(`#player${playerIndex}Area`);
     // get player coord location area

@@ -14,19 +14,22 @@ const newGame = (() => {
         gameboard: Gameboard(10, 10),
     }
 
-    player1.gameboard.placeShip(5, [0,0], 2);
-    player1.gameboard.placeShip(4, [9,9], 0);
-    player1.gameboard.placeShip(3, [5,5], 2);
-    player1.gameboard.placeShip(3, [7,0], 1);
-    player1.gameboard.placeShip(2, [0,9], 0);
+    console.log(player1.gameboard.boardLocArray[0]);
 
-    player2.gameboard.placeShip(5, [0,0], 2);
-    player2.gameboard.placeShip(4, [9,9], 0);
-    player2.gameboard.placeShip(3, [5,5], 2);
-    player2.gameboard.placeShip(3, [7,0], 1);
-    player2.gameboard.placeShip(2, [0,9], 0);
+    player1.gameboard.placeShip(5, [0,0], 2);
+    // player1.gameboard.placeShip(4, [0,1], 1);
+    // player1.gameboard.placeShip(3, [0,2], 1);
+    // player1.gameboard.placeShip(3, [0,3], 1);
+    // player1.gameboard.placeShip(2, [0,4], 1);
+
+    // player2.gameboard.placeShip(5, [5,5], 3);
+    // player2.gameboard.placeShip(4, [6,5], 0);
+    // player2.gameboard.placeShip(3, [7,5], 0);
+    // player2.gameboard.placeShip(3, [4,5], 0);
+    // player2.gameboard.placeShip(2, [3,5], 0);
 
     setShips(player1, 0);
+    setShips(player2, 1);
     
 
     return {
