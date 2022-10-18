@@ -145,12 +145,12 @@ const Gameboard = (sizeX, sizeY) => {
             return console.error("Max ships already placed!");
         }
 
-        // if (checkOccupied(getLocationIndex(location))) {
-        //     console.log(location);
-        //     console.log(getLocationIndex(location));
-        //     console.log(checkOccupied(getLocationIndex(location)));
-        //     return console.error("This location is already occupied!");
-        // }
+        if (checkOccupied(getLocationIndex(location))) {
+            console.log(location);
+            console.log(getLocationIndex(location));
+            console.log(checkOccupied(getLocationIndex(location)));
+            return console.error("This location is already occupied!");
+        }
 
 
 
