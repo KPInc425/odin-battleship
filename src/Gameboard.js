@@ -23,6 +23,7 @@ const Gameboard = (sizeX, sizeY) => {
 
     const receiveAttack = (coords) => {
         let attackLocationIndex;
+        // Adjust for whether coords or index is input
         if (Array.isArray(coords)) {
             attackLocationIndex = getLocationIndex(coords);
         } else {
@@ -41,10 +42,9 @@ const Gameboard = (sizeX, sizeY) => {
         let attackHit = checkOccupied(attackLocationIndex);
 
         if (attackHit) {
-
+            console.log(typeof attackLocationIndex);
             let hitShip = getHitShip(attackLocationIndex);
             hitShip.hit();
-            console.log(hitShip);
             if (hitShip.isSunk()) {
                 console.log(`You have sunk the ${hitShip.shipData.name}`);
                 if(checkIfLost()) {
@@ -67,7 +67,7 @@ const Gameboard = (sizeX, sizeY) => {
     const checkIfLost = () => {
         let sunkShips = 0;
         shipsLocationArray.forEach((ship) => {
-            if (ship.shipData.isSunk === 1) {
+            if (ship.shipData.sunk === true) {
                 sunkShips++
             }
         })
@@ -81,8 +81,10 @@ const Gameboard = (sizeX, sizeY) => {
 
     const getHitShip = (hitIndex) => {
         for (let i = 0; i < shipsLocationArray.length; i++) {
-            // console.log(shipsLocationArray[i]);
-            let foundShip = shipsLocationArray[i].shipData.location.find(index => index === hitIndex);
+            console.log(shipsLocationArray[i]);
+            let foundShip;
+            // find() only works with truthy value and fails @ 0 index
+            hitIndex > 0 ? foundShip = shipsLocationArray[i].shipData.location.find(index => index === hitIndex) : foundShip = true;
             if (foundShip) {
                 return shipsLocationArray[i];
             }

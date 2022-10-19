@@ -1,3 +1,59 @@
+import { checkMultiplayer } from "./gameLoop";
+
+const newGameButton = (player1, player2, multi) => {
+    // Get Content container
+    const mainContainer = document.querySelector('.content');
+    // Create startButton container
+    const startButton = document.createElement('button');
+    startButton.id = 'startButton';
+    startButton.textContent = "Start New Game";
+    startButton.value = "Start New Game";
+
+    startButton.addEventListener('click', () => {
+        console.log('click');
+        startButton.classList.add('hidden');
+        player1.gameboard.placeShip(5, [0,0], 2);
+        player1.gameboard.placeShip(4, [0,1], 2);
+        // player1.gameboard.placeShip(3, [0,2], 2);
+        // player1.gameboard.placeShip(3, [0,3], 2);
+        // player1.gameboard.placeShip(2, [0,4], 2);
+    
+        player2.gameboard.placeShip(5, [5,5], 3);
+        player2.gameboard.placeShip(4, [6,5], 3);
+        player2.gameboard.placeShip(3, [7,5], 3);
+        player2.gameboard.placeShip(3, [4,5], 0);
+        player2.gameboard.placeShip(2, [5,8], 3);
+
+        setShips(player1, 1);
+        setShips(player2, 2);
+
+        if (multi) {
+            console.log("Multiplayer Selected");
+            addAttackListeners(player1, 1);
+            addAttackListeners(player2, 2);
+        } else {
+            addAttackListeners(player2, 2);
+        }
+
+    }, {once: true})
+
+    mainContainer.appendChild(startButton);
+}
+
+const drawNarrativeBoard = () => {
+    // Get Content container
+    const mainContainer = document.querySelector('.content');
+    // Create narrative board container
+    const narrativeBoard = document.createElement('div');
+    narrativeBoard.classList.add('narrativeBoard');
+    // Create narrative text
+    const narrativeText = document.createElement('p');
+    narrativeText.textContent = "Welcome to BattleShip";
+    // append elements
+    narrativeBoard.appendChild(narrativeText);
+    mainContainer.appendChild(narrativeBoard);
+}
+
 const drawGameboards = () => {
     const legend = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -105,24 +161,54 @@ const findNode = (nodeList, index) => {
     }
 }
 
-const addAttackListeners = (player) => {
-    const enemyCoordLocations = document.querySelector('#player2Area').querySelectorAll('.gridLocation');
-    console.log(enemyCoordLocations);
+const addAttackListeners = (player, index) => {
+    console.log(player);
+    const enemyCoordLocations = document.querySelector(`#player${index}Area`).querySelectorAll('.gridLocation');
     enemyCoordLocations.forEach((coord) => {
+        coord.classList.add('coordHover');
         coord.addEventListener('click', (e) => {
-            console.log(e.target.textContent);
-            let attackHit = player.gameboard.receiveAttack(e.target.getAttribute('data-index'));
-            if (attackHit) {
-                e.target.textContent = 'X';
-            } else {
-                e.target.textContent = 'O';
-            }
+            handleAttack(e.target, player, index);
         }, {once: true})
     })
 }
 
+const handleAttack = (target, player, index) => {
+    console.log(target);
+    let enemy;
+    if (index === 1) {
+        enemy = 1;
+    } else {
+        enemy = 2;
+    }
+    // Try attack and save result
+    let attackHit = player.gameboard.receiveAttack(target.getAttribute('data-index'));
+    // setNarrativeText(``)
+    if (attackHit) {
+        target.textContent = 'X';
+        target.classList.remove('coordHover');
+    } else {
+        target.textContent = 'O';
+        target.classList.remove('coordHover');
+    }
+
+    if (!checkMultiplayer()) {
+        setTimeout(() => {
+            console.log("AI Attacks!")
+        }, 1000)
+    } else {
+        console.log(`It is now Player${enemy}'s turn!`);
+    }
+}
+
+const setNarrativeText = (inputText) => {
+    const narrativeText = document.querySelector('.narrativeText');
+    narrativeText.textContent = inputText;
+}
+
 export {
+    drawNarrativeBoard,
     drawGameboards,
+    newGameButton,
     setShips,
     addAttackListeners,
 }

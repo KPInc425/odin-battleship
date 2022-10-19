@@ -1,4 +1,4 @@
-import newGame from "./gameLoop";
+import {newGame} from "./gameLoop";
 import "./style.css";
 
 newGame;

@@ -7,6 +7,24 @@ body {
     color: white;
 }
 
+.content {
+    position: relative;
+}
+
+#startButton {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 25%;
+    height: 15%;
+    border: 7px solid white;
+    border-style: outset;
+    background-color: black;
+    color: white;
+    font-weight: 550;
+}
+
 .testing {
     color: white;
 }
@@ -63,7 +81,7 @@ body {
     font-size: 0.75em;
 }
 
-.gridContainer:last-of-type .gridLocation:hover {
+#startButton:hover, .coordHover:hover {
     background-color: rgb(0, 255, 34);
     color: black;
 }
@@ -75,4 +93,15 @@ body {
 .shipLocation {
     border: 2px solid blue;
     background-color: rgb(77, 77, 77);
+}
+
+.narrativeBoard {
+    margin: 0 auto;
+    border: 2px solid white;
+    text-align: center;
+    width: 50%;
+}
+
+.hidden {
+    display: none;
 }
