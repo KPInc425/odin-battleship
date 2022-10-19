@@ -4,21 +4,22 @@ import { addAttackListeners, drawGameboards, drawNarrativeBoard, newGameButton, 
 
 
 let currentPlayer = 1;
-let multiplayer = 1;
+let multiplayer = 0;
+const player1 = {
+    character: Player("KP", false),
+    gameboard: Gameboard(10, 10),
+}
+const player2 = {
+    character: Player("Robot", true),
+    gameboard: Gameboard(10, 10),
+}
 
 const newGame = (() => {
     drawNarrativeBoard();
     drawGameboards();
     
 
-    const player1 = {
-        character: Player("KP", false),
-        gameboard: Gameboard(10, 10),
-    }
-    const player2 = {
-        character: Player("Robot", true),
-        gameboard: Gameboard(10, 10),
-    }
+
     // multiplayer = 1;
     newGameButton(player1, player2, multiplayer);
     
@@ -39,5 +40,7 @@ const setCurrentPlayer = (playerIndex) => {
 export {
     newGame,
     currentPlayer,
-    checkMultiplayer
+    checkMultiplayer, 
+    player1,
+    player2,
 } 

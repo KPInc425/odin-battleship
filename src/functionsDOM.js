@@ -14,9 +14,9 @@ const newGameButton = (player1, player2, multi) => {
         startButton.classList.add('hidden');
         player1.gameboard.placeShip(5, [0,0], 2);
         player1.gameboard.placeShip(4, [0,1], 2);
-        // player1.gameboard.placeShip(3, [0,2], 2);
-        // player1.gameboard.placeShip(3, [0,3], 2);
-        // player1.gameboard.placeShip(2, [0,4], 2);
+        player1.gameboard.placeShip(3, [0,2], 2);
+        player1.gameboard.placeShip(3, [0,3], 2);
+        player1.gameboard.placeShip(2, [0,4], 2);
     
         player2.gameboard.placeShip(5, [5,5], 3);
         player2.gameboard.placeShip(4, [6,5], 3);
@@ -174,34 +174,41 @@ const addAttackListeners = (player, index) => {
 
 const handleAttack = (target, player, index) => {
     console.log(target);
-    let enemy;
+    let attackingPlayer;
     if (index === 1) {
-        enemy = 1;
+        attackingPlayer = 2;
     } else {
-        enemy = 2;
+        attackingPlayer = 1;
     }
     // Try attack and save result
     let attackHit = player.gameboard.receiveAttack(target.getAttribute('data-index'));
-    // setNarrativeText(``)
-    if (attackHit) {
-        target.textContent = 'X';
-        target.classList.remove('coordHover');
-    } else {
-        target.textContent = 'O';
-        target.classList.remove('coordHover');
-    }
+    setNarrativeText(`Player${attackingPlayer} sends missles!`)
+    setTimeout(() => {
+        if (attackHit) {
+            setNarrativeText("And it's a Hit!");
+            target.textContent = 'X';
+            target.classList.remove('coordHover');
+        } else {
+            setNarrativeText("And it's a Miss...");
+            target.textContent = 'O';
+            target.classList.remove('coordHover');
+        }
+    
+        if (!checkMultiplayer()) {
+            setTimeout(() => {
+                setNarrativeText(`${player.character.name} Retaliates!`);
+                console.log("AI Attacks!");
+    
+            }, 1000);
+        } else {
+            console.log(`It is now Player${index}'s turn!`);
+        }
+    }, 1000);
 
-    if (!checkMultiplayer()) {
-        setTimeout(() => {
-            console.log("AI Attacks!")
-        }, 1000)
-    } else {
-        console.log(`It is now Player${enemy}'s turn!`);
-    }
 }
 
 const setNarrativeText = (inputText) => {
-    const narrativeText = document.querySelector('.narrativeText');
+    const narrativeText = document.querySelector('.narrativeBoard p');
     narrativeText.textContent = inputText;
 }
 
