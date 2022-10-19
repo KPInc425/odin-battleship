@@ -111,9 +111,13 @@ const addAttackListeners = (player) => {
     enemyCoordLocations.forEach((coord) => {
         coord.addEventListener('click', (e) => {
             console.log(e.target.textContent);
-            player.gameboard.receiveAttack(e.target.getAttribute('data-index'));
-            e.target.textContent = 'X';
-        })
+            let attackHit = player.gameboard.receiveAttack(e.target.getAttribute('data-index'));
+            if (attackHit) {
+                e.target.textContent = 'X';
+            } else {
+                e.target.textContent = 'O';
+            }
+        }, {once: true})
     })
 }
 
