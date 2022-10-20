@@ -86,9 +86,9 @@ body {
     color: black;
 }
 
-/* .disableHover {
+.disableClick {
     pointer-events: none;
-} */
+}
 
 .shipLocation {
     border: 2px solid blue;

@@ -174,6 +174,7 @@ const addAttackListeners = (player, index) => {
 
 const handleAttack = (target, player, index) => {
     console.log(target);
+    let attackedArea = document.querySelector(`#player${index}Area`);
     let attackingPlayer;
     if (index === 1) {
         attackingPlayer = 2;
@@ -198,12 +199,15 @@ const handleAttack = (target, player, index) => {
             setTimeout(() => {
                 setNarrativeText(`${player.character.name} Retaliates!`);
                 console.log("AI Attacks!");
-    
+                attackedArea.classList.remove('disableClick');
             }, 1000);
         } else {
             console.log(`It is now Player${index}'s turn!`);
         }
     }, 1000);
+    // Prevent further attacks
+    attackedArea.classList.add('disableClick');
+    
 
 }
 
