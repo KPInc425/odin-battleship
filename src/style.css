@@ -73,17 +73,30 @@ body {
     border: 1px solid white;
     align-items: center;
     justify-content: center;
-    /* font-size: 0.5em; */
     min-height: 1em;
+}
+
+.gridLocation {
+    position: relative;
 }
 
 .gridLabelAlpha, .gridLabelNum {
     font-size: 0.75em;
 }
 
-#startButton:hover, .coordHover:hover {
-    background-color: rgb(0, 255, 34);
+#startButton:hover, .coordHoverPlace:hover {
+    background-color: rgb(0, 255, 0);
     color: black;
+}
+
+.coordHoverAttack:hover {
+    background-color: rgb(255, 0, 0);
+    color: black;
+}
+
+button:hover {
+    background-color: rgb(0, 0, 255);
+    color: white;
 }
 
 .disableClick {
@@ -104,4 +117,35 @@ body {
 
 .hidden {
     display: none;
+}
+
+.direction0Button {
+    position: absolute;
+    margin-top: -135%;
+}
+.direction1Button {
+    position: absolute;
+    margin-right: -135%;
+}
+.direction2Button {
+    position: absolute;
+    margin-bottom: -135%;
+}
+.direction3Button {
+    position: absolute;
+    margin-left: -135%;
+}
+
+.buttonDirection {
+    border: 1px solid white;
+    background-color: black;
+    color: white;
+    font-weight: 550;
+    z-index: 2;
+    width: 24px;
+    height: 24px;
+}
+
+.chosenLocation {
+    background-color: blue;
 }

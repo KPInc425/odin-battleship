@@ -5,6 +5,7 @@ import { addAttackListeners, drawGameboards, drawNarrativeBoard, newGameButton, 
 
 let currentPlayer = 1;
 let multiplayer = 0;
+let gameStarted = 0;
 const player1 = {
     character: Player("KP", false),
     gameboard: Gameboard(10, 10),
@@ -22,6 +23,7 @@ const newGame = (() => {
 
     // multiplayer = 1;
     newGameButton(player1, player2, multiplayer);
+
     
 })();
 

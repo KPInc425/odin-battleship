@@ -1,4 +1,4 @@
-import { checkMultiplayer } from "./gameLoop";
+import { checkMultiplayer, player1, player2 } from "./gameLoop";
 
 const newGameButton = (player1, player2, multi) => {
     // Get Content container
@@ -12,32 +12,51 @@ const newGameButton = (player1, player2, multi) => {
     startButton.addEventListener('click', () => {
         console.log('click');
         startButton.classList.add('hidden');
-        player1.gameboard.placeShip(5, [0,0], 2);
-        player1.gameboard.placeShip(4, [0,1], 2);
-        player1.gameboard.placeShip(3, [0,2], 2);
-        player1.gameboard.placeShip(3, [0,3], 2);
-        player1.gameboard.placeShip(2, [0,4], 2);
+        placeShipsDOM(player1, player2, 0, 0);
+        // player1.gameboard.placeShip(5, [0,0], 2);
+        // player1.gameboard.placeShip(4, [0,1], 2);
+        // player1.gameboard.placeShip(3, [0,2], 2);
+        // player1.gameboard.placeShip(3, [0,3], 2);
+        // player1.gameboard.placeShip(2, [0,4], 2);
     
-        player2.gameboard.placeShip(5, [5,5], 3);
-        player2.gameboard.placeShip(4, [6,5], 3);
-        player2.gameboard.placeShip(3, [7,5], 3);
-        player2.gameboard.placeShip(3, [4,5], 0);
-        player2.gameboard.placeShip(2, [5,8], 3);
+        // player2.gameboard.placeShip(5, [5,5], 3);
+        // player2.gameboard.placeShip(4, [6,5], 3);
+        // player2.gameboard.placeShip(3, [7,5], 3);
+        // player2.gameboard.placeShip(3, [4,5], 0);
+        // player2.gameboard.placeShip(2, [5,8], 3);
 
-        setShips(player1, 1);
-        setShips(player2, 2);
+        // setShips(player1, 1);
+        // setShips(player2, 2);
 
-        if (multi) {
-            console.log("Multiplayer Selected");
-            addAttackListeners(player1, 1);
-            addAttackListeners(player2, 2);
-        } else {
-            addAttackListeners(player2, 2);
-        }
+        // if (multi) {
+        //     console.log("Multiplayer Selected");
+        //     addAttackListeners(player1, 1);
+        //     addAttackListeners(player2, 2);
+        // } else {
+        //     addAttackListeners(player2, 2);
+        // }
 
     }, {once: true})
 
     mainContainer.appendChild(startButton);
+}
+
+const placeShipsDOM = (player1, player2, random, multi) => {
+    if (random) {
+        // randomly set all ships
+    } else {
+        if (multi) {
+            //add placement listeners for player1
+            // allow player1 to place ships
+
+            // then place listeners for player2
+            // allow player2 to place ships
+        } else {
+             //add placement listeners for player1
+            addPlacementListeners(player1, 1);
+
+        }
+    }
 }
 
 const drawNarrativeBoard = () => {
@@ -163,13 +182,77 @@ const findNode = (nodeList, index) => {
 
 const addAttackListeners = (player, index) => {
     console.log(player);
-    const enemyCoordLocations = document.querySelector(`#player${index}Area`).querySelectorAll('.gridLocation');
-    enemyCoordLocations.forEach((coord) => {
-        coord.classList.add('coordHover');
+    const playerCoordLocations = document.querySelector(`#player${index}Area`).querySelectorAll('.gridLocation');
+    playerCoordLocations.forEach((coord) => {
+        coord.classList.add('coordHoverAttack');
         coord.addEventListener('click', (e) => {
             handleAttack(e.target, player, index);
         }, {once: true})
     })
+}
+const addPlacementListeners = (player, index) => {
+    console.log(player);
+    const playerCoordLocations = document.querySelector(`#player${index}Area`).querySelectorAll('.gridLocation');
+    playerCoordLocations.forEach((coord) => {
+        coord.classList.add('coordHoverPlace');
+        coord.addEventListener('click', (e) => {
+            console.log('click');
+            const chosenCoord = document.querySelector('.chosenLocation');
+            // remove buttons and chosenLocation if exists
+            if (chosenCoord) {
+                chosenCoord.innerHTML = '';
+                chosenCoord.classList.remove('chosenLocation');
+            }
+            // add arrow buttons in all directions from location
+            console.log(e.target);
+            e.target.classList.add('chosenLocation');
+            e.target.classList.remove('coordHoverPlace');
+            createDirectionButtons(e.target);
+        }, {once: true})
+    })
+}
+
+const createDirectionButtons = (parent) => {
+    // direction legend
+    const directions = [
+        {
+            direction: 0,
+            symbol: '↑',
+        },
+        {
+            direction: 1,
+            symbol: '→',
+        },
+        {
+            direction: 2,
+            symbol: '↓',
+        },
+        {
+            direction: 3,
+            symbol: '←',
+        },        
+    ];
+    for (let i = 0; i < 4; i++) {
+        const tmpDirectionButton = document.createElement('button');
+        tmpDirectionButton.classList.add(`direction${i}Button`);
+        tmpDirectionButton.classList.add(`buttonDirection`);
+        tmpDirectionButton.textContent = directions[i].symbol;
+        tmpDirectionButton.setAttribute('data-direction', directions[i].direction);
+        tmpDirectionButton.addEventListener('click', (e) => {
+            placeChosenDirection(e.target.getAttribute('data-direction'));
+            // Remove buttons
+            const chosenCoord = document.querySelector('.chosenLocation');
+            chosenCoord.innerHTML = '';
+            chosenCoord.classList.remove('chosenLocation');
+
+        })
+        parent.appendChild(tmpDirectionButton);
+    }
+}
+
+const placeChosenDirection = (chosenDirection) => {
+    console.log(chosenDirection);
+
 }
 
 const handleAttack = (target, player, index) => {
@@ -183,32 +266,73 @@ const handleAttack = (target, player, index) => {
     }
     // Try attack and save result
     let attackHit = player.gameboard.receiveAttack(target.getAttribute('data-index'));
-    setNarrativeText(`Player${attackingPlayer} sends missles!`)
+    setNarrativeText(`${player1.character.name} sends missles!`)
     setTimeout(() => {
-        if (attackHit) {
-            setNarrativeText("And it's a Hit!");
-            target.textContent = 'X';
-            target.classList.remove('coordHover');
-        } else {
-            setNarrativeText("And it's a Miss...");
-            target.textContent = 'O';
-            target.classList.remove('coordHover');
-        }
-    
+        setAttackIcon(attackHit, target);
         if (!checkMultiplayer()) {
-            setTimeout(() => {
-                setNarrativeText(`${player.character.name} Retaliates!`);
-                console.log("AI Attacks!");
-                attackedArea.classList.remove('disableClick');
-            }, 1000);
+            if (player1.gameboard.checkIfLost()) {
+                setNarrativeText(`${player2.character.name} Has sunk all of ${player1.character.name}'s Ships!`);
+                setTimeout(() => {
+                    setNarrativeText(`${player2.character.name} Wins!`)
+                }, 1000)
+            } else if (player2.gameboard.checkIfLost()) {
+                setNarrativeText(`${player1.character.name} Has sunk all of ${player2.character.name}'s Ships!`);
+                setTimeout(() => {
+                    setNarrativeText(`${player1.character.name} Wins!`)
+                }, 1000)                         
+            } else {
+                setTimeout(() => {
+                    setNarrativeText(`${player2.character.name} Retaliates!`);
+                    console.log("AI Attacks!");
+                    setTimeout(() => {
+                        // Call player2 random attack, attack player1
+                        setNarrativeText(`${player.character.name} sends a missle!`);
+                        setTimeout(() => {
+                            let aiAttackCoords = player2.character.randomAttack();
+                            let aiAttackHit = player1.gameboard.receiveAttack(aiAttackCoords);
+        
+                            // get attack coord index
+                            let aiAttackIndex = player1.gameboard.getLocationIndex(aiAttackCoords);
+                            let player1NodeList = document.querySelector('#player1Area').querySelector('.gridPlayerArea').querySelectorAll('.gridLocation');
+                            // console.log(player1NodeList);
+                            console.log(aiAttackIndex);
+                            for (let i = 0; i < player1NodeList.length; i++) {
+                                // console.log(player1NodeList[i].getAttribute('data-index'));
+        
+                                if (Number(player1NodeList[i].getAttribute('data-index')) === aiAttackIndex) {
+                                    console.log(player1NodeList[i]);
+                                    setAttackIcon(aiAttackHit, player1NodeList[i]);
+                                    setTimeout(() => {
+                                        setNarrativeText(`${player1.character.name}'s turn to attack!`);
+                                        attackedArea.classList.remove('disableClick');
+                                    }, 500)
+                                    return;
+                                }
+                            }
+                        }, 500)
+                    }, 500)
+                }, 500);
+            }
         } else {
             console.log(`It is now Player${index}'s turn!`);
         }
-    }, 1000);
+    }, 500);
     // Prevent further attacks
     attackedArea.classList.add('disableClick');
     
 
+}
+
+const setAttackIcon = (attackHit, target) => {
+    if (attackHit) {
+        setNarrativeText("And it's a Hit!");
+        target.textContent = 'X';
+        target.classList.remove('coordHover');
+    } else {
+        setNarrativeText("And it's a Miss...");
+        target.textContent = 'O';
+        target.classList.remove('coordHover');
+    }
 }
 
 const setNarrativeText = (inputText) => {

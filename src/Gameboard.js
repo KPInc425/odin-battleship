@@ -310,6 +310,7 @@ const Gameboard = (sizeX, sizeY) => {
         placeShip,
         receiveAttack,
         checkIfLost,
+        getLocationIndex,
     };
 }
 
