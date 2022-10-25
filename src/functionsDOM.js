@@ -49,14 +49,14 @@ const newGameButton = (player1, player2, multi) => {
         // setShips(player1, 1);
         // setShips(player2, 2);
 
-        if (multi) {
-            console.log("Multiplayer Selected");
-            addAttackListeners(player1, 1);
-            addAttackListeners(player2, 2);
-        } else {
-            console.log('Single Player');
-            addAttackListeners(player2, 2);
-        }
+        // if (multi) {
+        //     console.log("Multiplayer Selected");
+        //     addAttackListeners(player1, 1);
+        //     addAttackListeners(player2, 2);
+        // } else {
+        //     console.log('Single Player');
+        //     addAttackListeners(player2, 2);
+        // }
 
     }, {once: false})
 
@@ -287,6 +287,7 @@ const addAttackListeners = (player, index) => {
 }
 
 const clearSelectedCoords = () => {
+    console.log('Cleared Coord Location');
     const chosenCoord = document.querySelector('.chosenLocation');
     // remove buttons and chosenLocation if exists
     if (chosenCoord) {
@@ -302,21 +303,29 @@ const addPlacementListeners = (player, index) => {
     playerCoordLocations.forEach((coord) => {
         coord.classList.add('coordHoverPlace');
         coord.addEventListener('click', (e) => {
-            console.log('click');
-            // const chosenCoord = document.querySelector('.chosenLocation');
-            // // remove buttons and chosenLocation if exists
-            // if (chosenCoord) {
-            //     chosenCoord.innerHTML = '';
-            //     chosenCoord.classList.remove('chosenLocation');
-            // }
+            console.log('Coords Clicked!');
+            e.stopImmediatePropagation();
 
-            clearSelectedCoords();
+            // check if a location is already chosen and clear if true
+            if (document.querySelector('.chosenLocation')) {
+                // get rid of this maybe when ship is placing
+                // check if direction button is clicked > clear if false
+                if (!e.target.classList.contains('buttonDirection')) {
+                    clearSelectedCoords();
+                }
+
+            }
 
             // add arrow buttons in all directions from location
             console.log(e.target);
-            e.target.classList.add('chosenLocation');
-            e.target.classList.remove('coordHoverPlace');
-            createDirectionButtons(player, e.target);
+            if (e.target.classList.contains('gridLocation')){
+                if (!e.target.classList.contains('chosenLocation')) {
+                    e.target.classList.add('chosenLocation');
+                    e.target.classList.remove('coordHoverPlace');
+                    createDirectionButtons(player, e.target);
+                }
+            }
+
         }, {once: false})
     })
 }
@@ -365,7 +374,7 @@ const createDirectionButtons = (player, parent) => {
         clearSelectedCoords();
         document.querySelector('.inputForm').classList.remove('disableClick');
     })
-    parent.appendChild(btnCancelPlaceShip);
+    // parent.appendChild(btnCancelPlaceShip);
 }
 
 const placeChosenDirection = (player, chosenDirection) => {
