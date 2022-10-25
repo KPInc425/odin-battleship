@@ -46,7 +46,7 @@ body {
     grid-template-columns: 5% 95%;
     grid-template-rows: 5% 95%;
     /* width: 50%; */
-    height: 70%;
+    /* height: 70%; */
     min-width: 250px;
     min-height: 250px;
     padding: 20px;
@@ -77,6 +77,10 @@ body {
     min-height: 1em;
 }
 
+.flex {
+    display: flex;
+}
+
 .gridLocation {
     position: relative;
 }
@@ -95,7 +99,7 @@ body {
     color: black;
 }
 
-button:hover {
+button:hover, .btnSelected {
     background-color: rgb(0, 0, 255);
     color: white;
 }
@@ -137,7 +141,7 @@ button:hover {
     margin-left: -135%;
 }
 
-.buttonDirection {
+.buttonDirection, .btnCancelPlaceShip {
     border: 1px solid white;
     background-color: black;
     color: white;
@@ -145,6 +149,11 @@ button:hover {
     z-index: 2;
     width: 24px;
     height: 24px;
+}
+
+.btnCancelPlaceShip:hover {
+    background-color: red;
+    color: black;
 }
 
 .chosenLocation {

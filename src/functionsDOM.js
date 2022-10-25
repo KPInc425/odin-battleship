@@ -20,9 +20,9 @@ const newGameButton = (player1, player2, multi) => {
     const startButton = drawStartButton();
 
     startButton.addEventListener('click', () => {
+        const playArea = document.querySelector('.playArea');
         // Reset game if already played
         if (player1.gameboard.shipsLocationArray.length > 0) {
-            const playArea = document.querySelector('.playArea');
             // reset placed ships and gameboards
             console.log('old game');
             playArea.replaceWith(drawGameboards());
@@ -30,35 +30,24 @@ const newGameButton = (player1, player2, multi) => {
             player2.gameboard = Gameboard(10, 10);
         }
 
-        // // reset play 
-        // const playArea = document.querySelector('.playArea');
-        // if (playArea) {
-        //     console.log('old game');
-        //     playArea.innerHTML = "";
-        //     drawGameboards();
-        //     player1.gameboard = Gameboard(10, 10);
-        //     player2.gameboard = Gameboard(10, 10);
-        // }
-
         toggleStartButton();
-
-        addShipButtons();
+        playArea.appendChild(createShipInput());
 
         // placeShipsDOM(player1, player2, 0, 0);
-        player1.gameboard.placeShip(5, [0,0], 2);
-        player1.gameboard.placeShip(4, [0,1], 2);
-        player1.gameboard.placeShip(3, [0,2], 2);
-        player1.gameboard.placeShip(3, [0,3], 2);
-        player1.gameboard.placeShip(2, [0,4], 2);
+        // player1.gameboard.placeShip(5, [0,0], 2);
+        // player1.gameboard.placeShip(4, [0,1], 2);
+        // player1.gameboard.placeShip(3, [0,2], 2);
+        // player1.gameboard.placeShip(3, [0,3], 2);
+        // player1.gameboard.placeShip(2, [0,4], 2);
     
         // player2.gameboard.placeShip(5, [5,5], 3);
         // player2.gameboard.placeShip(4, [6,5], 3);
         // player2.gameboard.placeShip(3, [7,5], 3);
         // player2.gameboard.placeShip(3, [4,5], 0);
-        player2.gameboard.placeShip(2, [5,8], 3);
+        // player2.gameboard.placeShip(2, [5,8], 3);
 
-        setShips(player1, 1);
-        setShips(player2, 2);
+        // setShips(player1, 1);
+        // setShips(player2, 2);
 
         if (multi) {
             console.log("Multiplayer Selected");
@@ -74,13 +63,73 @@ const newGameButton = (player1, player2, multi) => {
     mainContainer.appendChild(startButton);
 }
 
-const addShipButtons = (multi) => {
+
+
+const createShipInput = (multi) => {
     if (multi) {
         // multiplayer code adds buttons for 1 & 2 player 
         // or add buttons for player1 then for player2 when player1 placed
     } else {
         // add Shipname input
+        const inputPlacementContainer = document.createElement('form');
+        inputPlacementContainer.classList.add('inputForm');
+
+        const inputShipName = document.createElement('input');
+        inputShipName.placeholder = "Enter Ship Name"
+
+        const btnPlaceShip = document.createElement('button');
+        btnPlaceShip.textContent = "Place Ship";
+        btnPlaceShip.value = "Place Ship";
+        btnPlaceShip.classList.add('btnPlaceShip');
+        btnPlaceShip.addEventListener('click', (e) => {
+            e.preventDefault();
+            const btnSelected = document.querySelector('.btnSelected');
+            if (btnSelected) {
+            placeShipsDOM(player1, player2, 0, 0);
+            inputPlacementContainer.classList.add('disableClick');
+
+
+            } else {
+                console.log("No ship Selected. Choose ship to place.");
+            }
+
+        })
+
+
+        const shipBtnContainer = document.createElement('div');
+        shipBtnContainer.classList.add('flex');
         // add player1 shipbuttons
+        let j = 2;
+        for (let i = 0; i < 5; i++) {
+            const tmpButton = document.createElement('button');
+            tmpButton.textContent = `${j} length`;
+            tmpButton.value = `${j} length`;
+            tmpButton.classList.add('btnShip');
+            // tmpButton.name = `btnShip${i}`
+            tmpButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                const btnSelected = document.querySelector('.btnSelected');
+                if (btnSelected) {
+                    btnSelected.classList.remove('btnSelected');
+                }
+                e.target.classList.add('btnSelected');
+            })
+            shipBtnContainer.appendChild(tmpButton);
+            console.log(shipBtnContainer.children.length);
+            // Used for ship Lengths 2,3,3,4,5
+            if (shipBtnContainer.children.length > 0) {
+                j++;
+                if (shipBtnContainer.children.length > 1 && shipBtnContainer.children.length < 3) {
+                    j--;
+                }
+            }
+        }
+
+        inputPlacementContainer.appendChild(inputShipName);
+        inputPlacementContainer.appendChild(btnPlaceShip);
+        inputPlacementContainer.appendChild(shipBtnContainer);
+
+        return inputPlacementContainer;
 
     }
 }
@@ -236,6 +285,16 @@ const addAttackListeners = (player, index) => {
         }, {once: true})
     })
 }
+
+const clearSelectedCoords = () => {
+    const chosenCoord = document.querySelector('.chosenLocation');
+    // remove buttons and chosenLocation if exists
+    if (chosenCoord) {
+        chosenCoord.innerHTML = '';
+        chosenCoord.classList.remove('chosenLocation');
+    }
+}
+
 const addPlacementListeners = (player, index) => {
     console.log(player);
     const playerCoordLocations = document.querySelector(`#player${index}Area`).querySelectorAll('.gridLocation');
@@ -243,12 +302,15 @@ const addPlacementListeners = (player, index) => {
         coord.classList.add('coordHoverPlace');
         coord.addEventListener('click', (e) => {
             console.log('click');
-            const chosenCoord = document.querySelector('.chosenLocation');
-            // remove buttons and chosenLocation if exists
-            if (chosenCoord) {
-                chosenCoord.innerHTML = '';
-                chosenCoord.classList.remove('chosenLocation');
-            }
+            // const chosenCoord = document.querySelector('.chosenLocation');
+            // // remove buttons and chosenLocation if exists
+            // if (chosenCoord) {
+            //     chosenCoord.innerHTML = '';
+            //     chosenCoord.classList.remove('chosenLocation');
+            // }
+
+            clearSelectedCoords();
+
             // add arrow buttons in all directions from location
             console.log(e.target);
             e.target.classList.add('chosenLocation');
@@ -294,6 +356,15 @@ const createDirectionButtons = (player, parent) => {
         })
         parent.appendChild(tmpDirectionButton);
     }
+    const btnCancelPlaceShip = document.createElement('button');
+    btnCancelPlaceShip.textContent = "X";
+    btnCancelPlaceShip.value = "Cancel Place Ship";
+    btnCancelPlaceShip.classList.add('btnCancelPlaceShip');
+    btnCancelPlaceShip.addEventListener('click', () => {
+        clearSelectedCoords();
+        document.querySelector('.inputForm').classList.remove('disableClick');
+    })
+    parent.appendChild(btnCancelPlaceShip);
 }
 
 const placeChosenDirection = (player, chosenDirection) => {
