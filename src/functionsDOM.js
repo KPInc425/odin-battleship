@@ -1,44 +1,88 @@
+import Gameboard from "./Gameboard";
 import { checkMultiplayer, player1, player2 } from "./gameLoop";
+
+const drawStartButton = () => {
+    // Create startButton container
+    const startButton = document.createElement('button');
+    startButton.id = 'startButton';
+    startButton.classList.add('startButton');
+    startButton.textContent = "Start New Game";
+    startButton.value = "Start New Game";
+
+    return startButton;
+
+}
 
 const newGameButton = (player1, player2, multi) => {
     // Get Content container
     const mainContainer = document.querySelector('.content');
-    // Create startButton container
-    const startButton = document.createElement('button');
-    startButton.id = 'startButton';
-    startButton.textContent = "Start New Game";
-    startButton.value = "Start New Game";
+
+    const startButton = drawStartButton();
 
     startButton.addEventListener('click', () => {
-        console.log('click');
-        startButton.classList.add('hidden');
-        placeShipsDOM(player1, player2, 0, 0);
-        // player1.gameboard.placeShip(5, [0,0], 2);
-        // player1.gameboard.placeShip(4, [0,1], 2);
-        // player1.gameboard.placeShip(3, [0,2], 2);
-        // player1.gameboard.placeShip(3, [0,3], 2);
-        // player1.gameboard.placeShip(2, [0,4], 2);
+        // Reset game if already played
+        if (player1.gameboard.shipsLocationArray.length > 0) {
+            const playArea = document.querySelector('.playArea');
+            // reset placed ships and gameboards
+            console.log('old game');
+            playArea.replaceWith(drawGameboards());
+            player1.gameboard = Gameboard(10, 10);
+            player2.gameboard = Gameboard(10, 10);
+        }
+
+        // // reset play 
+        // const playArea = document.querySelector('.playArea');
+        // if (playArea) {
+        //     console.log('old game');
+        //     playArea.innerHTML = "";
+        //     drawGameboards();
+        //     player1.gameboard = Gameboard(10, 10);
+        //     player2.gameboard = Gameboard(10, 10);
+        // }
+
+        toggleStartButton();
+
+        addShipButtons();
+
+        // placeShipsDOM(player1, player2, 0, 0);
+        player1.gameboard.placeShip(5, [0,0], 2);
+        player1.gameboard.placeShip(4, [0,1], 2);
+        player1.gameboard.placeShip(3, [0,2], 2);
+        player1.gameboard.placeShip(3, [0,3], 2);
+        player1.gameboard.placeShip(2, [0,4], 2);
     
         // player2.gameboard.placeShip(5, [5,5], 3);
         // player2.gameboard.placeShip(4, [6,5], 3);
         // player2.gameboard.placeShip(3, [7,5], 3);
         // player2.gameboard.placeShip(3, [4,5], 0);
-        // player2.gameboard.placeShip(2, [5,8], 3);
+        player2.gameboard.placeShip(2, [5,8], 3);
 
-        // setShips(player1, 1);
-        // setShips(player2, 2);
+        setShips(player1, 1);
+        setShips(player2, 2);
 
-        // if (multi) {
-        //     console.log("Multiplayer Selected");
-        //     addAttackListeners(player1, 1);
-        //     addAttackListeners(player2, 2);
-        // } else {
-        //     addAttackListeners(player2, 2);
-        // }
+        if (multi) {
+            console.log("Multiplayer Selected");
+            addAttackListeners(player1, 1);
+            addAttackListeners(player2, 2);
+        } else {
+            console.log('Single Player');
+            addAttackListeners(player2, 2);
+        }
 
-    }, {once: true})
+    }, {once: false})
 
     mainContainer.appendChild(startButton);
+}
+
+const addShipButtons = (multi) => {
+    if (multi) {
+        // multiplayer code adds buttons for 1 & 2 player 
+        // or add buttons for player1 then for player2 when player1 placed
+    } else {
+        // add Shipname input
+        // add player1 shipbuttons
+
+    }
 }
 
 const placeShipsDOM = (player1, player2, random, multi) => {
@@ -73,6 +117,7 @@ const drawNarrativeBoard = () => {
     mainContainer.appendChild(narrativeBoard);
 }
 
+// Refactor to take make 1 gameboard at a time and return that gameboard
 const drawGameboards = () => {
     const legend = [
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -151,7 +196,8 @@ const drawGameboards = () => {
     // Add to DOM
     boardsContainer.appendChild(player1Grid);
     boardsContainer.appendChild(player2Grid);
-    mainContainer.appendChild(boardsContainer);
+
+    return boardsContainer;
 }
 
 const setShips = (player, playerIndex) => {
@@ -181,7 +227,7 @@ const findNode = (nodeList, index) => {
 }
 
 const addAttackListeners = (player, index) => {
-    console.log(player);
+    // console.log(player);
     const playerCoordLocations = document.querySelector(`#player${index}Area`).querySelectorAll('.gridLocation');
     playerCoordLocations.forEach((coord) => {
         coord.classList.add('coordHoverAttack');
@@ -207,12 +253,12 @@ const addPlacementListeners = (player, index) => {
             console.log(e.target);
             e.target.classList.add('chosenLocation');
             e.target.classList.remove('coordHoverPlace');
-            createDirectionButtons(e.target);
+            createDirectionButtons(player, e.target);
         }, {once: true})
     })
 }
 
-const createDirectionButtons = (parent) => {
+const createDirectionButtons = (player, parent) => {
     // direction legend
     const directions = [
         {
@@ -239,7 +285,7 @@ const createDirectionButtons = (parent) => {
         tmpDirectionButton.textContent = directions[i].symbol;
         tmpDirectionButton.setAttribute('data-direction', directions[i].direction);
         tmpDirectionButton.addEventListener('click', (e) => {
-            placeChosenDirection(e.target.getAttribute('data-direction'));
+            placeChosenDirection(player, e.target.getAttribute('data-direction'));
             // Remove buttons
             const chosenCoord = document.querySelector('.chosenLocation');
             chosenCoord.innerHTML = '';
@@ -250,8 +296,10 @@ const createDirectionButtons = (parent) => {
     }
 }
 
-const placeChosenDirection = (chosenDirection) => {
+const placeChosenDirection = (player, chosenDirection) => {
     console.log(chosenDirection);
+    console.log(player);
+    player.gameboard.placeShip()
 
 }
 
@@ -274,11 +322,13 @@ const handleAttack = (target, player, index) => {
                 setNarrativeText(`${player2.character.name} Has sunk all of ${player1.character.name}'s Ships!`);
                 setTimeout(() => {
                     setNarrativeText(`${player2.character.name} Wins!`)
+                    toggleStartButton();
                 }, 1000)
             } else if (player2.gameboard.checkIfLost()) {
                 setNarrativeText(`${player1.character.name} Has sunk all of ${player2.character.name}'s Ships!`);
                 setTimeout(() => {
                     setNarrativeText(`${player1.character.name} Wins!`)
+                    toggleStartButton();
                 }, 1000)                         
             } else {
                 setTimeout(() => {
@@ -321,6 +371,10 @@ const handleAttack = (target, player, index) => {
     attackedArea.classList.add('disableClick');
     
 
+}
+
+const toggleStartButton = () => {
+    document.querySelector('#startButton').classList.toggle('hidden');
 }
 
 const setAttackIcon = (attackHit, target) => {

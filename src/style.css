@@ -45,8 +45,8 @@ body {
     display: grid;
     grid-template-columns: 5% 95%;
     grid-template-rows: 5% 95%;
-    width: 50%;
-    height: 50%;
+    /* width: 50%; */
+    height: 70%;
     min-width: 250px;
     min-height: 250px;
     padding: 20px;
@@ -61,7 +61,8 @@ body {
 }
 
 .playArea {
-    display: flex;
+    display: grid;
+    grid-template-columns: 50% 50%;
     width: 95vw;
     height: 100vh;
     margin: 0 auto;

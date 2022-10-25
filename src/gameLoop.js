@@ -16,8 +16,10 @@ const player2 = {
 }
 
 const newGame = (() => {
+    const mainContainer = document.querySelector('.content');
     drawNarrativeBoard();
-    drawGameboards();
+
+    mainContainer.appendChild(drawGameboards());
     
 
 
