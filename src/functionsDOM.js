@@ -292,6 +292,7 @@ const clearSelectedCoords = () => {
     if (chosenCoord) {
         chosenCoord.innerHTML = '';
         chosenCoord.classList.remove('chosenLocation');
+        chosenCoord.classList.add('coordHoverPlace');
     }
 }
 
@@ -316,7 +317,7 @@ const addPlacementListeners = (player, index) => {
             e.target.classList.add('chosenLocation');
             e.target.classList.remove('coordHoverPlace');
             createDirectionButtons(player, e.target);
-        }, {once: true})
+        }, {once: false})
     })
 }
 
