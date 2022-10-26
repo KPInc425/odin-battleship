@@ -73,6 +73,7 @@ const createShipInput = (multi) => {
         // add Shipname input
         const inputPlacementContainer = document.createElement('form');
         inputPlacementContainer.classList.add('inputForm');
+        inputPlacementContainer.id = "player1Input";
 
         const inputShipName = document.createElement('input');
         inputShipName.placeholder = "Enter Ship Name"
@@ -84,11 +85,9 @@ const createShipInput = (multi) => {
         btnPlaceShip.addEventListener('click', (e) => {
             e.preventDefault();
             const btnSelected = document.querySelector('.btnSelected');
+            btnPlaceShip.classList.add('btnFocused');
             if (btnSelected) {
             placeShipsDOM(player1, player2, 0, 0);
-            // inputPlacementContainer.classList.add('disableClick');
-
-
             } else {
                 console.log("No ship Selected. Choose ship to place.");
             }
@@ -295,6 +294,40 @@ const setSingleShip = (player, playerIndex) => {
         btnSelected.classList.add('disableClick');
         btnSelected.classList.remove('btnSelected');
 
+        // Check if all ships have been placed
+        if (player.gameboard.checkAllPlaced()) {
+            // Remove placement event listeners (disable?)
+            removeLocationListeners(1);
+            const btnPlaceShip = document.querySelector('.btnPlaceShip');
+            btnPlaceShip.disabled = true;
+            btnPlaceShip.classList.add('disableClick');
+            // Remove Input options
+            document.querySelector('#player1Input').classList.add('hidden');
+            // place AI ships 
+            setAIShips();
+            // add attack event listeners 
+        } else {
+            // Focus next ship button
+            const placementBtns = document.querySelectorAll('.btnShip');
+            for (let i = 0; i < placementBtns.length; i++) {
+                if (!placementBtns[i].classList.contains('disableClick')) {
+                    placementBtns[i].classList.add('btnSelected');
+                    return;
+                }
+            }
+        }
+
+}
+
+const setAIShips = () => {
+    player2.gameboard.placeShip(5, [5,5], 3);
+    player2.gameboard.placeShip(4, [6,5], 3);
+    player2.gameboard.placeShip(3, [7,5], 3);
+    player2.gameboard.placeShip(3, [4,5], 0);
+    player2.gameboard.placeShip(2, [5,8], 3);
+    // TESTING
+    setShips(player2, 2);
+    addAttackListeners(player2, 2);
 }
 
 const findNode = (nodeList, index) => {
@@ -315,6 +348,16 @@ const addAttackListeners = (player, index) => {
         }, {once: true})
     })
 }
+const removeLocationListeners = (index) => {
+    console.log("Removing Event Listeners");
+    const playerCoordLocations = document.querySelector(`#player${index}Area`).querySelectorAll('.gridLocation');
+    playerCoordLocations.forEach((coord) => {
+        coord.classList.remove('coordHoverPlace');
+        // replaces with html string, stripping all js (eventListeners)
+        coord.outerHTML = coord.outerHTML;
+        
+    })
+}
 
 const clearSelectedCoords = () => {
     console.log('Cleared Coord Location');
@@ -329,36 +372,42 @@ const clearSelectedCoords = () => {
 
 const addPlacementListeners = (player, index) => {
     // console.log(player);
-    const playerCoordLocations = document.querySelector(`#player${index}Area`).querySelectorAll('.gridLocation');
-    playerCoordLocations.forEach((coord) => {
-        coord.classList.add('coordHoverPlace');
-        coord.addEventListener('click', (e) => {
-            console.log('Coords Clicked!');
-            e.stopImmediatePropagation();
+    const playerArea = document.querySelector(`#player${index}Area`);
+    if (playerArea.classList.contains('.disableClick')) {
+        playerArea.classList.remove('.disableClick');
+    } else {
+        const playerCoordLocations = playerArea.querySelectorAll('.gridLocation');
+        playerCoordLocations.forEach((coord) => {
+            coord.classList.add('coordHoverPlace');
+            coord.addEventListener('click', (e) => {
+                console.log('Coords Clicked!');
+                e.stopImmediatePropagation();
 
-            // check if a location is already chosen and clear if true
-            if (document.querySelector('.chosenLocation')) {
-                // get rid of this maybe when ship is placing
-                // check if direction button is clicked > clear if false
-                if (!e.target.classList.contains('buttonDirection')) {
-                    clearSelectedCoords();
+                // check if a location is already chosen and clear if true
+                if (document.querySelector('.chosenLocation')) {
+                    // get rid of this maybe when ship is placing
+                    // check if direction button is clicked > clear if false
+                    if (!e.target.classList.contains('buttonDirection')) {
+                        clearSelectedCoords();
+                    }
+
                 }
 
-            }
-
-            // add arrow buttons in all directions from location
-            console.log(e.target);
-            if (e.target.classList.contains('gridLocation')){
-                if (!e.target.classList.contains('chosenLocation')) {
-                    e.target.classList.add('chosenLocation');
-                    e.target.setAttribute('data-playerIndex', index);
-                    e.target.classList.remove('coordHoverPlace');
-                    createDirectionButtons(player, e.target);
+                // add arrow buttons in all directions from location
+                console.log(e.target);
+                if (e.target.classList.contains('gridLocation')){
+                    if (!e.target.classList.contains('chosenLocation')) {
+                        e.target.classList.add('chosenLocation');
+                        e.target.setAttribute('data-playerIndex', index);
+                        e.target.classList.remove('coordHoverPlace');
+                        createDirectionButtons(player, e.target);
+                    }
                 }
-            }
 
-        }, {once: false})
-    })
+            }, {once: false})
+        })
+    }
+    
 }
 
 const createDirectionButtons = (player, parent) => {
@@ -471,7 +520,8 @@ const handleAttack = (target, player, index) => {
                         setNarrativeText(`${player.character.name} sends a missle!`);
                         setTimeout(() => {
                             let aiAttackCoords = player2.character.randomAttack();
-                            let aiAttackHit = player1.gameboard.receiveAttack(Number(aiAttackCoords));
+                            console.log(aiAttackCoords);
+                            let aiAttackHit = player1.gameboard.receiveAttack(aiAttackCoords);
         
                             // get attack coord index
                             let aiAttackIndex = player1.gameboard.getLocationIndex(aiAttackCoords);

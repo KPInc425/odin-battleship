@@ -159,3 +159,8 @@ button:hover, .btnSelected {
 .chosenLocation {
     background-color: blue;
 }
+
+.btnFocused {
+    background-color: blue;
+    color: white;
+}

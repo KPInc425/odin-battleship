@@ -24,6 +24,7 @@ const Gameboard = (sizeX, sizeY) => {
     const receiveAttack = (coords) => {
         let attackLocationIndex;
         // Adjust for whether coords or index is input
+        console.log(coords);
 
         attackLocationIndex = getLocationIndex(coords);
 
@@ -143,6 +144,11 @@ const Gameboard = (sizeX, sizeY) => {
 
     const checkOccupied = (index) => {
         console.log(index);
+        if (typeof index != "number" && index !== undefined) {
+            console.log('Change to Number');
+            index = Number(index);
+            console.log(index);
+        }
         if (index < 0 || index > boardLocArray.length || index === undefined) {
             console.error(`Location Index ${index} is out of bounds!`);
             return true;
@@ -154,8 +160,6 @@ const Gameboard = (sizeX, sizeY) => {
             }
         }
     }
-
-
 
     const getLocationIndex = (location) => {
         // returns location if already in index format
@@ -336,6 +340,17 @@ const Gameboard = (sizeX, sizeY) => {
         return possibleMoves;
     }
 
+    const checkAllPlaced = () => {
+        console.log(shipsLocationArray.length);
+        if (shipsLocationArray.length >= 5) {
+            console.log('true');
+            return true;
+        } else {
+            console.log('false');
+            return false;
+        }
+    }
+
     return {
         boardLocArray,
         shipsLocationArray,
@@ -343,6 +358,7 @@ const Gameboard = (sizeX, sizeY) => {
         receiveAttack,
         checkIfLost,
         getLocationIndex,
+        checkAllPlaced,
     };
 }
 

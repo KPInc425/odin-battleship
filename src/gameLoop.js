@@ -26,6 +26,7 @@ const newGame = (() => {
     // multiplayer = 1;
     newGameButton(player1, player2, multiplayer);
 
+
     
 })();
 
