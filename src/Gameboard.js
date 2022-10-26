@@ -24,11 +24,9 @@ const Gameboard = (sizeX, sizeY) => {
     const receiveAttack = (coords) => {
         let attackLocationIndex;
         // Adjust for whether coords or index is input
-        if (Array.isArray(coords)) {
-            attackLocationIndex = getLocationIndex(coords);
-        } else {
-            attackLocationIndex = Number(coords);
-        }
+
+        attackLocationIndex = getLocationIndex(coords);
+
 
         // Check if attackMove has already been made before
         if (checkAttacks(missedAttacks, attackLocationIndex)) {
@@ -105,21 +103,26 @@ const Gameboard = (sizeX, sizeY) => {
         if (shipsLocationArray.length > 4) {
             return console.error("Max ships already placed!");
         }
+        // Check if coords array else use index
         if (checkOccupied(getLocationIndex(location))) {
             return console.error("This location is already occupied!");
         }
+    
+
 
         let ship = mockShip || Battleship(shipSize);
 
         // get possible placement arrays in each direction
         const possiblePlacements = checkPossiblePlacements(ship, location);
+        console.log(possiblePlacements);
 
 
         // if chosen direction to place is valid
         if (possiblePlacements[directionIndex].indexArray) {
             let placementIndexArray = possiblePlacements[directionIndex].indexArray;
             ship.shipData.location = placementIndexArray;
-            // console.log(ship);
+            console.log(ship);
+
             let placementLocations = [];
             // loop through placement location array
             for (let i = 0; i < placementIndexArray.length; i++) {
@@ -139,8 +142,9 @@ const Gameboard = (sizeX, sizeY) => {
     }
 
     const checkOccupied = (index) => {
+        console.log(index);
         if (index < 0 || index > boardLocArray.length || index === undefined) {
-            console.error("Location is out of bounds!");
+            console.error(`Location Index ${index} is out of bounds!`);
             return true;
         } else {
             if (boardLocArray[index][2] === 1) {
@@ -151,12 +155,23 @@ const Gameboard = (sizeX, sizeY) => {
         }
     }
 
+
+
     const getLocationIndex = (location) => {
+        // returns location if already in index format
+        if (!Array.isArray(location)) {
+            return location;
+        }
         for (let i = 0; i < boardLocArray.length; i++) {
             if (boardLocArray[i][0] === location[0] && boardLocArray[i][1] === location[1]) {
                 return i;
             }
         }
+
+    }
+
+    const getCoordFromIndex = (index) => {
+        return boardLocArray[index];
     }
 
     const checkEast = (length, location) => {
@@ -165,9 +180,11 @@ const Gameboard = (sizeX, sizeY) => {
         // check all locations in chosen direction, stop at length of ship
         for (let i = 1; i < length; i++) {
             // Cycle to next location
+            if (!Array.isArray(location)) {
+                location = getCoordFromIndex(location);
+            } 
             let tmpLocation = [location[0], location[1] + i];
-            // if occupied, stop counting direction
-            const tmpLocationIndex = getLocationIndex(tmpLocation);
+            let tmpLocationIndex = getLocationIndex(tmpLocation);
             if (checkOccupied(tmpLocationIndex)) {
                 return false;
             }
@@ -195,9 +212,11 @@ const Gameboard = (sizeX, sizeY) => {
                 return false;
             }
             // Cycle to next location
+            if (!Array.isArray(location)) {
+                location = getCoordFromIndex(location);
+            } 
             let tmpLocation = [location[0], location[1] - i];
-            // if occupied, stop counting direction
-            const tmpLocationIndex = getLocationIndex(tmpLocation);
+            let tmpLocationIndex = getLocationIndex(tmpLocation);
             if (checkOccupied(tmpLocationIndex)) {
                 return false;
             }
@@ -216,7 +235,9 @@ const Gameboard = (sizeX, sizeY) => {
 
     const checkNorth = (length, location) => {
         // initialize array to hold location index that aren't occupied
-        let indexArray = [getLocationIndex(location)];
+        const indexArray = [getLocationIndex(location)];
+        console.log(indexArray);
+
         // check all locations in chosen direction, stop at length of ship
         for (let i = 1; i < length; i++) {
             // check if out of range
@@ -224,8 +245,16 @@ const Gameboard = (sizeX, sizeY) => {
                 return false;
             }
             // Cycle to next location
+            console.log(location);
+            if (!Array.isArray(location)) {
+                location = getCoordFromIndex(location);
+            } 
+            console.log(location);
             let tmpLocation = [location[0] - i, location[1]];
-            const tmpLocationIndex = getLocationIndex(tmpLocation);
+            console.log(tmpLocation);
+            let tmpLocationIndex = getLocationIndex(tmpLocation);
+
+            console.log(tmpLocationIndex);
             // if occupied, stop counting direction
             if (checkOccupied(tmpLocationIndex)) {
                 return false;
@@ -250,8 +279,11 @@ const Gameboard = (sizeX, sizeY) => {
         // check all locations in chosen direction, stop at length of ship
         for (let i = 1; i < length; i++) {
             // Cycle to next location
+            if (!Array.isArray(location)) {
+                location = getCoordFromIndex(location);
+            } 
             let tmpLocation = [location[0] + i, location[1]];
-            const tmpLocationIndex = getLocationIndex(tmpLocation);
+            let tmpLocationIndex = getLocationIndex(tmpLocation);
             // if occupied, stop counting direction
             if (checkOccupied(tmpLocationIndex)) {
                 return false;

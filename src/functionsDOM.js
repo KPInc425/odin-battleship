@@ -86,7 +86,7 @@ const createShipInput = (multi) => {
             const btnSelected = document.querySelector('.btnSelected');
             if (btnSelected) {
             placeShipsDOM(player1, player2, 0, 0);
-            inputPlacementContainer.classList.add('disableClick');
+            // inputPlacementContainer.classList.add('disableClick');
 
 
             } else {
@@ -103,7 +103,7 @@ const createShipInput = (multi) => {
         for (let i = 0; i < 5; i++) {
             const tmpButton = document.createElement('button');
             tmpButton.textContent = `${j} length`;
-            tmpButton.value = `${j} length`;
+            tmpButton.value = `${j}`;
             tmpButton.classList.add('btnShip');
             // tmpButton.name = `btnShip${i}`
             tmpButton.addEventListener('click', (e) => {
@@ -115,7 +115,7 @@ const createShipInput = (multi) => {
                 e.target.classList.add('btnSelected');
             })
             shipBtnContainer.appendChild(tmpButton);
-            console.log(shipBtnContainer.children.length);
+            // console.log(shipBtnContainer.children.length);
             // Used for ship Lengths 2,3,3,4,5
             if (shipBtnContainer.children.length > 0) {
                 j++;
@@ -267,6 +267,36 @@ const setShips = (player, playerIndex) => {
     })
 }
 
+const setSingleShip = (player, playerIndex) => {
+        // get player area
+        const playerContainer = document.querySelector(`#player${playerIndex}Area`);
+        // get player coord location area
+        const playAreaNodeList = playerContainer.querySelectorAll('.gridLocation');
+    
+        // get ship
+        console.log(player.gameboard.shipsLocationArray.length);
+        console.log(player.gameboard.shipsLocationArray);
+        const ship = player.gameboard.shipsLocationArray[player.gameboard.shipsLocationArray.length - 1];
+
+        console.log(ship);
+
+        // loop through each ship coord
+        for (let i = 0; i < ship.shipData.location.length; i++) {
+            // find locaiton in DOM
+            let tmpLocation = findNode(playAreaNodeList, ship.shipData.location[i]);
+            // set class for DOM display
+            tmpLocation.classList.add('shipLocation');
+            tmpLocation.classList.remove('coordHoverPlace');
+        }
+
+        // remove focus from button
+        let btnSelected = document.querySelector('.btnSelected');
+        btnSelected.disabled = true;
+        btnSelected.classList.add('disableClick');
+        btnSelected.classList.remove('btnSelected');
+
+}
+
 const findNode = (nodeList, index) => {
     for (let i = 0; i < nodeList.length; i++) {
         if (Number(nodeList[i].getAttribute('data-index')) === index) {
@@ -298,7 +328,7 @@ const clearSelectedCoords = () => {
 }
 
 const addPlacementListeners = (player, index) => {
-    console.log(player);
+    // console.log(player);
     const playerCoordLocations = document.querySelector(`#player${index}Area`).querySelectorAll('.gridLocation');
     playerCoordLocations.forEach((coord) => {
         coord.classList.add('coordHoverPlace');
@@ -321,6 +351,7 @@ const addPlacementListeners = (player, index) => {
             if (e.target.classList.contains('gridLocation')){
                 if (!e.target.classList.contains('chosenLocation')) {
                     e.target.classList.add('chosenLocation');
+                    e.target.setAttribute('data-playerIndex', index);
                     e.target.classList.remove('coordHoverPlace');
                     createDirectionButtons(player, e.target);
                 }
@@ -350,6 +381,7 @@ const createDirectionButtons = (player, parent) => {
             symbol: '←',
         },        
     ];
+    // create/implement directional buttons
     for (let i = 0; i < 4; i++) {
         const tmpDirectionButton = document.createElement('button');
         tmpDirectionButton.classList.add(`direction${i}Button`);
@@ -366,6 +398,7 @@ const createDirectionButtons = (player, parent) => {
         })
         parent.appendChild(tmpDirectionButton);
     }
+    // create/implement cancel button
     const btnCancelPlaceShip = document.createElement('button');
     btnCancelPlaceShip.textContent = "X";
     btnCancelPlaceShip.value = "Cancel Place Ship";
@@ -374,13 +407,29 @@ const createDirectionButtons = (player, parent) => {
         clearSelectedCoords();
         document.querySelector('.inputForm').classList.remove('disableClick');
     })
-    // parent.appendChild(btnCancelPlaceShip);
+    parent.appendChild(btnCancelPlaceShip);
 }
 
 const placeChosenDirection = (player, chosenDirection) => {
     console.log(chosenDirection);
     console.log(player);
-    player.gameboard.placeShip()
+    let btnSelected = document.querySelector('.btnSelected')
+    if (btnSelected) {
+        const shipLength = btnSelected.value;
+        if (!shipLength) {
+            console.log('Ship Length button must be selected1');
+            return;
+        }
+        const chosenLocation = document.querySelector('.chosenLocation');
+    
+        const locationIndex = Number(chosenLocation.getAttribute('data-index'));
+        const playerIndex = Number(chosenLocation.getAttribute('data-playerIndex'));
+        // console.log(typeof locationIndex);
+        player.gameboard.placeShip(shipLength, locationIndex, chosenDirection);
+        setSingleShip(player, playerIndex);
+    } else {
+        console.error('No length selected!');
+    }
 
 }
 
@@ -394,7 +443,7 @@ const handleAttack = (target, player, index) => {
         attackingPlayer = 1;
     }
     // Try attack and save result
-    let attackHit = player.gameboard.receiveAttack(target.getAttribute('data-index'));
+    let attackHit = player.gameboard.receiveAttack(Number(target.getAttribute('data-index')));
     setNarrativeText(`${player1.character.name} sends missles!`)
     setTimeout(() => {
         setAttackIcon(attackHit, target);
@@ -420,7 +469,7 @@ const handleAttack = (target, player, index) => {
                         setNarrativeText(`${player.character.name} sends a missle!`);
                         setTimeout(() => {
                             let aiAttackCoords = player2.character.randomAttack();
-                            let aiAttackHit = player1.gameboard.receiveAttack(aiAttackCoords);
+                            let aiAttackHit = player1.gameboard.receiveAttack(Number(aiAttackCoords));
         
                             // get attack coord index
                             let aiAttackIndex = player1.gameboard.getLocationIndex(aiAttackCoords);
