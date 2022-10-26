@@ -24,7 +24,7 @@ const Gameboard = (sizeX, sizeY) => {
     const receiveAttack = (coords) => {
         let attackLocationIndex;
         // Adjust for whether coords or index is input
-        console.log(coords);
+        // console.log(coords);
 
         attackLocationIndex = getLocationIndex(coords);
 
@@ -115,14 +115,14 @@ const Gameboard = (sizeX, sizeY) => {
 
         // get possible placement arrays in each direction
         const possiblePlacements = checkPossiblePlacements(ship, location);
-        console.log(possiblePlacements);
+        // console.log(possiblePlacements);
 
 
         // if chosen direction to place is valid
         if (possiblePlacements[directionIndex].indexArray) {
             let placementIndexArray = possiblePlacements[directionIndex].indexArray;
             ship.shipData.location = placementIndexArray;
-            console.log(ship);
+            // console.log(ship);
 
             let placementLocations = [];
             // loop through placement location array
@@ -143,11 +143,11 @@ const Gameboard = (sizeX, sizeY) => {
     }
 
     const checkOccupied = (index) => {
-        console.log(index);
+        // console.log(index);
         if (typeof index != "number" && index !== undefined) {
             console.log('Change to Number');
             index = Number(index);
-            console.log(index);
+            // console.log(index);
         }
         if (index < 0 || index > boardLocArray.length || index === undefined) {
             console.error(`Location Index ${index} is out of bounds!`);
@@ -240,7 +240,7 @@ const Gameboard = (sizeX, sizeY) => {
     const checkNorth = (length, location) => {
         // initialize array to hold location index that aren't occupied
         const indexArray = [getLocationIndex(location)];
-        console.log(indexArray);
+        // console.log(indexArray);
 
         // check all locations in chosen direction, stop at length of ship
         for (let i = 1; i < length; i++) {
@@ -249,16 +249,16 @@ const Gameboard = (sizeX, sizeY) => {
                 return false;
             }
             // Cycle to next location
-            console.log(location);
+            // console.log(location);
             if (!Array.isArray(location)) {
                 location = getCoordFromIndex(location);
             } 
-            console.log(location);
+            // console.log(location);
             let tmpLocation = [location[0] - i, location[1]];
-            console.log(tmpLocation);
+            // console.log(tmpLocation);
             let tmpLocationIndex = getLocationIndex(tmpLocation);
 
-            console.log(tmpLocationIndex);
+            // console.log(tmpLocationIndex);
             // if occupied, stop counting direction
             if (checkOccupied(tmpLocationIndex)) {
                 return false;
@@ -341,12 +341,12 @@ const Gameboard = (sizeX, sizeY) => {
     }
 
     const checkAllPlaced = () => {
-        console.log(shipsLocationArray.length);
+        // console.log(shipsLocationArray.length);
         if (shipsLocationArray.length >= 5) {
-            console.log('true');
+            // console.log('true');
             return true;
         } else {
-            console.log('false');
+            // console.log('false');
             return false;
         }
     }

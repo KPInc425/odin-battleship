@@ -20,7 +20,8 @@ const newGameButton = (player1, player2, multi) => {
     const startButton = drawStartButton();
 
     startButton.addEventListener('click', () => {
-        const playArea = document.querySelector('.playArea');
+        toggleStartButton();
+        let playArea = document.querySelector('.playArea');
         // Reset game if already played
         if (player1.gameboard.shipsLocationArray.length > 0) {
             // reset placed ships and gameboards
@@ -28,10 +29,12 @@ const newGameButton = (player1, player2, multi) => {
             playArea.replaceWith(drawGameboards());
             player1.gameboard = Gameboard(10, 10);
             player2.gameboard = Gameboard(10, 10);
+            playArea = document.querySelector('.playArea');
+            
         }
-
-        toggleStartButton();
-        playArea.appendChild(createShipInput());
+        console.log(playArea);
+        console.log(playArea.appendChild(createShipInput()));
+        // playArea.appendChild(createShipInput());
 
         // placeShipsDOM(player1, player2, 0, 0);
         // player1.gameboard.placeShip(5, [0,0], 2);
@@ -273,11 +276,11 @@ const setSingleShip = (player, playerIndex) => {
         const playAreaNodeList = playerContainer.querySelectorAll('.gridLocation');
     
         // get ship
-        console.log(player.gameboard.shipsLocationArray.length);
-        console.log(player.gameboard.shipsLocationArray);
+        // console.log(player.gameboard.shipsLocationArray.length);
+        // console.log(player.gameboard.shipsLocationArray);
         const ship = player.gameboard.shipsLocationArray[player.gameboard.shipsLocationArray.length - 1];
 
-        console.log(ship);
+        // console.log(ship);
 
         // loop through each ship coord
         for (let i = 0; i < ship.shipData.location.length; i++) {
@@ -320,13 +323,13 @@ const setSingleShip = (player, playerIndex) => {
 }
 
 const setAIShips = () => {
-    player2.gameboard.placeShip(5, [5,5], 3);
-    player2.gameboard.placeShip(4, [6,5], 3);
-    player2.gameboard.placeShip(3, [7,5], 3);
-    player2.gameboard.placeShip(3, [4,5], 0);
+    // player2.gameboard.placeShip(5, [5,5], 3);
+    // player2.gameboard.placeShip(4, [6,5], 3);
+    // player2.gameboard.placeShip(3, [7,5], 3);
+    // player2.gameboard.placeShip(3, [4,5], 0);
     player2.gameboard.placeShip(2, [5,8], 3);
     // TESTING
-    setShips(player2, 2);
+    // setShips(player2, 2);
     addAttackListeners(player2, 2);
 }
 
@@ -394,7 +397,7 @@ const addPlacementListeners = (player, index) => {
                 }
 
                 // add arrow buttons in all directions from location
-                console.log(e.target);
+                // console.log(e.target);
                 if (e.target.classList.contains('gridLocation')){
                     if (!e.target.classList.contains('chosenLocation')) {
                         e.target.classList.add('chosenLocation');
@@ -460,8 +463,8 @@ const createDirectionButtons = (player, parent) => {
 }
 
 const placeChosenDirection = (player, chosenDirection) => {
-    console.log(chosenDirection);
-    console.log(player);
+    // console.log(chosenDirection);
+    // console.log(player);
     let btnSelected = document.querySelector('.btnSelected')
     if (btnSelected) {
         const shipLength = btnSelected.value;
