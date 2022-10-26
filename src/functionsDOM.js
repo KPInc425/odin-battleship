@@ -425,8 +425,10 @@ const placeChosenDirection = (player, chosenDirection) => {
         const locationIndex = Number(chosenLocation.getAttribute('data-index'));
         const playerIndex = Number(chosenLocation.getAttribute('data-playerIndex'));
         // console.log(typeof locationIndex);
-        player.gameboard.placeShip(shipLength, locationIndex, chosenDirection);
-        setSingleShip(player, playerIndex);
+        if (player.gameboard.placeShip(shipLength, locationIndex, chosenDirection)) {
+            setSingleShip(player, playerIndex);
+        };
+
     } else {
         console.error('No length selected!');
     }
