@@ -29,11 +29,22 @@ const newGameButton = (player1, player2, multi) => {
             playArea.replaceWith(drawGameboards());
             player1.gameboard = Gameboard(10, 10);
             player2.gameboard = Gameboard(10, 10);
+            player2.character.clearNewGame();
             playArea = document.querySelector('.playArea');
             
         }
         // console.log(playArea);
-        return playArea.appendChild(createShipInput());
+        // TESTING REMOVE TO PLAY (AUTOPLACES SHIPS)
+        player1.gameboard.placeShip(5, [5,5], 3);
+        player1.gameboard.placeShip(4, [6,5], 3);
+        player1.gameboard.placeShip(3, [7,5], 3);
+        player1.gameboard.placeShip(3, [4,5], 0);
+        player1.gameboard.placeShip(2, [5,8], 3);   
+        setShips(player1, 1);
+        setAIShips();
+        // TESTING REMOVE TO PLAY
+
+        // return playArea.appendChild(createShipInput());
 
     }, {once: false})
 
@@ -297,13 +308,29 @@ const setSingleShip = (player, playerIndex) => {
 }
 
 const setAIShips = () => {
-    player2.gameboard.placeShip(5, [5,5], 3);
-    player2.gameboard.placeShip(4, [6,5], 3);
-    player2.gameboard.placeShip(3, [7,5], 3);
-    player2.gameboard.placeShip(3, [4,5], 0);
-    player2.gameboard.placeShip(2, [5,8], 3);
+    while (!player2.gameboard.placeShip(5, player2.character.randomPlacementCoords(), Math.floor(Math.random() * 4))) {
+    }
+    while (!player2.gameboard.placeShip(4, player2.character.randomPlacementCoords(), Math.floor(Math.random() * 4))) {
+    }
+    while (!player2.gameboard.placeShip(3, player2.character.randomPlacementCoords(), Math.floor(Math.random() * 4))) {
+    }
+    while (!player2.gameboard.placeShip(3, player2.character.randomPlacementCoords(), Math.floor(Math.random() * 4))) {
+    }
+    while (!player2.gameboard.placeShip(2, player2.character.randomPlacementCoords(), Math.floor(Math.random() * 4))) {
+    }
+
+    // for (let i = 0; i < 4; i ++) {
+    //     let randomCoords = player2.character.randomPlacementCoords();
+    //     console.log(randomCoords);
+    //     if (player2.gameboard.placeShip(5, randomCoords, i)) {
+    //         console.log('Placed Ship!');
+    //         i = 10;
+    //     }
+    // }
+
     // TESTING
-    // setShips(player2, 2);
+    console.log("Set Ships!");
+    setShips(player2, 2);
     addAttackListeners(player2, 2);
 }
 
@@ -498,7 +525,7 @@ const handleAttack = (target, player, index) => {
                         // Call player2 random attack, attack player1
                         setNarrativeText(`${player.character.name} sends a missle!`);
                         setTimeout(() => {
-                            let aiAttackCoords = player2.character.randomAttack();
+                            let aiAttackCoords = player2.character.randomAttackCoords();
                             console.log(aiAttackCoords);
                             let aiAttackHit = player1.gameboard.receiveAttack(aiAttackCoords);
         

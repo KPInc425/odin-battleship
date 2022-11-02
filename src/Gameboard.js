@@ -102,21 +102,20 @@ const Gameboard = (sizeX, sizeY) => {
     const placeShip = (shipSize, location, directionIndex, mockShip) => {
         // Placement checks
         if (shipsLocationArray.length > 4) {
-            return console.error("Max ships already placed!");
+            console.error("Max ships already placed!");
+            return false;
         }
         // Check if coords array else use index
         if (checkOccupied(getLocationIndex(location))) {
-            return console.error("This location is already occupied!");
+            console.error("This location is already occupied!");
+            return false;
         }
     
-
-
         let ship = mockShip || Battleship(shipSize);
 
         // get possible placement arrays in each direction
         const possiblePlacements = checkPossiblePlacements(ship, location);
         // console.log(possiblePlacements);
-
 
         // if chosen direction to place is valid
         if (possiblePlacements[directionIndex].indexArray) {
@@ -133,7 +132,8 @@ const Gameboard = (sizeX, sizeY) => {
                 placementLocations.push(boardLocArray[placementIndexArray[i]]);
             }
             shipsLocationArray.push(ship);
-            return placementLocations;
+            // return placementLocations;
+            return true;
         } else {
             console.error(`That move is invalid! You cannot move 
             ${possiblePlacements[directionIndex].direction} try again!`)
