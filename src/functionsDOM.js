@@ -319,17 +319,8 @@ const setAIShips = () => {
     while (!player2.gameboard.placeShip(2, player2.character.randomPlacementCoords(), Math.floor(Math.random() * 4))) {
     }
 
-    // for (let i = 0; i < 4; i ++) {
-    //     let randomCoords = player2.character.randomPlacementCoords();
-    //     console.log(randomCoords);
-    //     if (player2.gameboard.placeShip(5, randomCoords, i)) {
-    //         console.log('Placed Ship!');
-    //         i = 10;
-    //     }
-    // }
-
     // TESTING
-    console.log("Set Ships!");
+    // console.log("Set AI Ships!");
     setShips(player2, 2);
     addAttackListeners(player2, 2);
 }
@@ -490,8 +481,29 @@ const placeChosenDirection = (player, chosenDirection) => {
 
 }
 
+const checkIfWon = () => {
+    if (player1.gameboard.checkIfLost()) {
+        setNarrativeText(`${player2.character.name} Has sunk all of ${player1.character.name}'s Ships!`);
+        setTimeout(() => {
+            setNarrativeText(`${player2.character.name} Wins!`)
+            toggleStartButton();
+            return true
+        }, 1000)
+    } else if (player2.gameboard.checkIfLost()) {
+        setNarrativeText(`${player1.character.name} Has sunk all of ${player2.character.name}'s Ships!`);
+        setTimeout(() => {
+            setNarrativeText(`${player1.character.name} Wins!`)
+            toggleStartButton();
+            return true
+        }, 1000)   
+    } else {
+        return false;
+    }
+
+}
+
 const handleAttack = (target, player, index) => {
-    console.log(target);
+    // console.log(target);
     let attackedArea = document.querySelector(`#player${index}Area`);
     let attackingPlayer;
     if (index === 1) {
@@ -504,19 +516,9 @@ const handleAttack = (target, player, index) => {
     setNarrativeText(`${player1.character.name} sends missles!`)
     setTimeout(() => {
         setAttackIcon(attackHit, target);
-        if (!checkMultiplayer()) {
-            if (player1.gameboard.checkIfLost()) {
-                setNarrativeText(`${player2.character.name} Has sunk all of ${player1.character.name}'s Ships!`);
-                setTimeout(() => {
-                    setNarrativeText(`${player2.character.name} Wins!`)
-                    toggleStartButton();
-                }, 1000)
-            } else if (player2.gameboard.checkIfLost()) {
-                setNarrativeText(`${player1.character.name} Has sunk all of ${player2.character.name}'s Ships!`);
-                setTimeout(() => {
-                    setNarrativeText(`${player1.character.name} Wins!`)
-                    toggleStartButton();
-                }, 1000)                         
+        if (!checkMultiplayer()) {    
+            if (checkIfWon()) {
+                  console.log('Game Over!');
             } else {
                 setTimeout(() => {
                     setNarrativeText(`${player2.character.name} Retaliates!`);
@@ -528,25 +530,35 @@ const handleAttack = (target, player, index) => {
                             let aiAttackCoords = player2.character.randomAttackCoords();
                             console.log(aiAttackCoords);
                             let aiAttackHit = player1.gameboard.receiveAttack(aiAttackCoords);
-        
-                            // get attack coord index
-                            let aiAttackIndex = player1.gameboard.getLocationIndex(aiAttackCoords);
-                            let player1NodeList = document.querySelector('#player1Area').querySelector('.gridPlayerArea').querySelectorAll('.gridLocation');
-                            // console.log(player1NodeList);
-                            console.log(aiAttackIndex);
-                            for (let i = 0; i < player1NodeList.length; i++) {
-                                // console.log(player1NodeList[i].getAttribute('data-index'));
-        
-                                if (Number(player1NodeList[i].getAttribute('data-index')) === aiAttackIndex) {
-                                    console.log(player1NodeList[i]);
-                                    setAttackIcon(aiAttackHit, player1NodeList[i]);
-                                    setTimeout(() => {
-                                        setNarrativeText(`${player1.character.name}'s turn to attack!`);
-                                        attackedArea.classList.remove('disableClick');
-                                    }, 500)
-                                    return;
+
+                            // communicate hit or miss to AI player
+                            if (aiAttackHit) {
+                                player2.character.setLastHitCoords();
+                            }
+                            if (checkIfWon()) {
+                                console.log('GameOver!');
+                            } else {
+                                // get attack coord index
+                                let aiAttackIndex = player1.gameboard.getLocationIndex(aiAttackCoords);
+                                let player1NodeList = document.querySelector('#player1Area').querySelector('.gridPlayerArea').querySelectorAll('.gridLocation');
+                                // console.log(player1NodeList);
+                                // console.log(aiAttackIndex);
+                                for (let i = 0; i < player1NodeList.length; i++) {
+                                    // console.log(player1NodeList[i].getAttribute('data-index'));
+            
+                                    if (Number(player1NodeList[i].getAttribute('data-index')) === aiAttackIndex) {
+                                        // console.log(player1NodeList[i]);
+                                        setAttackIcon(aiAttackHit, player1NodeList[i]);
+                                        setTimeout(() => {
+                                            setNarrativeText(`${player1.character.name}'s turn to attack!`);
+                                            attackedArea.classList.remove('disableClick');
+                                        }, 500)
+                                        return;
+                                    }
                                 }
                             }
+        
+                            
                         }, 500)
                     }, 500)
                 }, 500);

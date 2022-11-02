@@ -4,9 +4,6 @@
 
 Finish it up
 
--Auto add AI ships
--Add attack listeners after ai ships placed
-
 
 You can polish the intelligence of the computer player by having it try adjacent slots after getting a ‘hit’.
 

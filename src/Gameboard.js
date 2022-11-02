@@ -41,7 +41,7 @@ const Gameboard = (sizeX, sizeY) => {
         let attackHit = checkOccupied(attackLocationIndex);
 
         if (attackHit) {
-            console.log(typeof attackLocationIndex);
+            // console.log(typeof attackLocationIndex);
             let hitShip = getHitShip(attackLocationIndex);
             hitShip.hit();
             if (hitShip.isSunk()) {
@@ -80,7 +80,7 @@ const Gameboard = (sizeX, sizeY) => {
 
     const getHitShip = (hitIndex) => {
         for (let i = 0; i < shipsLocationArray.length; i++) {
-            console.log(shipsLocationArray[i]);
+            // console.log(shipsLocationArray[i]);
             let foundShip;
             // find() only works with truthy value and fails @ 0 index
             hitIndex > 0 ? foundShip = shipsLocationArray[i].shipData.location.find(index => index === hitIndex) : foundShip = true;
