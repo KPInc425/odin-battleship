@@ -32,34 +32,8 @@ const newGameButton = (player1, player2, multi) => {
             playArea = document.querySelector('.playArea');
             
         }
-        console.log(playArea);
-        console.log(playArea.appendChild(createShipInput()));
-        // playArea.appendChild(createShipInput());
-
-        // placeShipsDOM(player1, player2, 0, 0);
-        // player1.gameboard.placeShip(5, [0,0], 2);
-        // player1.gameboard.placeShip(4, [0,1], 2);
-        // player1.gameboard.placeShip(3, [0,2], 2);
-        // player1.gameboard.placeShip(3, [0,3], 2);
-        // player1.gameboard.placeShip(2, [0,4], 2);
-    
-        // player2.gameboard.placeShip(5, [5,5], 3);
-        // player2.gameboard.placeShip(4, [6,5], 3);
-        // player2.gameboard.placeShip(3, [7,5], 3);
-        // player2.gameboard.placeShip(3, [4,5], 0);
-        // player2.gameboard.placeShip(2, [5,8], 3);
-
-        // setShips(player1, 1);
-        // setShips(player2, 2);
-
-        // if (multi) {
-        //     console.log("Multiplayer Selected");
-        //     addAttackListeners(player1, 1);
-        //     addAttackListeners(player2, 2);
-        // } else {
-        //     console.log('Single Player');
-        //     addAttackListeners(player2, 2);
-        // }
+        // console.log(playArea);
+        return playArea.appendChild(createShipInput());
 
     }, {once: false})
 
@@ -323,10 +297,10 @@ const setSingleShip = (player, playerIndex) => {
 }
 
 const setAIShips = () => {
-    // player2.gameboard.placeShip(5, [5,5], 3);
-    // player2.gameboard.placeShip(4, [6,5], 3);
-    // player2.gameboard.placeShip(3, [7,5], 3);
-    // player2.gameboard.placeShip(3, [4,5], 0);
+    player2.gameboard.placeShip(5, [5,5], 3);
+    player2.gameboard.placeShip(4, [6,5], 3);
+    player2.gameboard.placeShip(3, [7,5], 3);
+    player2.gameboard.placeShip(3, [4,5], 0);
     player2.gameboard.placeShip(2, [5,8], 3);
     // TESTING
     // setShips(player2, 2);
@@ -347,7 +321,9 @@ const addAttackListeners = (player, index) => {
     playerCoordLocations.forEach((coord) => {
         coord.classList.add('coordHoverAttack');
         coord.addEventListener('click', (e) => {
+            e.target.classList.remove('coordHoverAttack');
             handleAttack(e.target, player, index);
+            
         }, {once: true})
     })
 }
