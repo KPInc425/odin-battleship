@@ -35,16 +35,16 @@ const newGameButton = (player1, player2, multi) => {
         }
         // console.log(playArea);
         // TESTING REMOVE TO PLAY (AUTOPLACES SHIPS)
-        player1.gameboard.placeShip(5, [5,5], 3);
-        player1.gameboard.placeShip(4, [6,5], 3);
-        player1.gameboard.placeShip(3, [7,5], 3);
-        player1.gameboard.placeShip(3, [4,5], 0);
-        player1.gameboard.placeShip(2, [5,8], 3);   
-        setShips(player1, 1);
-        setAIShips();
+        // player1.gameboard.placeShip(5, [5,5], 3);
+        // player1.gameboard.placeShip(4, [6,5], 3);
+        // player1.gameboard.placeShip(3, [7,5], 3);
+        // player1.gameboard.placeShip(3, [4,5], 0);
+        // player1.gameboard.placeShip(2, [5,8], 3);   
+        // setShips(player1, 1);
+        // setAIShips();
         // TESTING REMOVE TO PLAY
 
-        // return playArea.appendChild(createShipInput());
+        return playArea.appendChild(createShipInput());
 
     }, {once: false})
 
@@ -321,7 +321,7 @@ const setAIShips = () => {
 
     // TESTING
     // console.log("Set AI Ships!");
-    setShips(player2, 2);
+    // setShips(player2, 2);
     addAttackListeners(player2, 2);
 }
 
